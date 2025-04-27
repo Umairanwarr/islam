@@ -4,6 +4,8 @@ import PrayerTime from '../components/prayerTime';
 import About from '../components/about';
 import Quran from '../components/quran';
 import Resources from '../components/resources';
+import Donation from '../components/donation';
+import Testimonials from '../components/testimonials';
 import Subscribe from '../components/subscribe';
 import Contact from '../components/contact';
 import Footer from '../components/footer';
@@ -58,6 +60,8 @@ function App() {
         <About />
         <Quran />
         <Resources />
+        <Donation />
+        <Testimonials />
         <Subscribe />
         <Contact />
         <Footer />

@@ -13,14 +13,14 @@ function Subscribe() {
   };
 
   return (
-    <div className="py-16 px-4 sm:px-6 lg:px-8 bg-gray-100">
+    <div className="py-16 px-4 sm:px-6 lg:px-8 bg-gray-100 subscribe-container">
       <div className="max-w-2xl mx-auto text-center">
-        <h2 className="text-4xl font-bold text-gray-800 mb-4">Stay Updated</h2>
-        <p className="text-lg text-gray-600 mb-8">
+        <h2 className="text-4xl font-bold text-gray-800 mb-4 subscribe-title">Stay Updated</h2>
+        <p className="text-lg text-gray-600 mb-8 subscribe-text">
           Subscribe to receive weekly Islamic reminders, new recitations, and updates on upcoming events.
         </p>
 
-        <form onSubmit={handleSubmit} className="max-w-lg mx-auto">
+        <form onSubmit={handleSubmit} className="max-w-lg mx-auto subscribe-form">
           <div className="flex flex-col sm:flex-row gap-3">
             <input
               type="email"

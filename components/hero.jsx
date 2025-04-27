@@ -27,7 +27,7 @@ function Hero() {
 
       {/* Content Section */}
       <div className="relative z-10 container mx-auto px-4 sm:px-6 lg:px-8 flex flex-col lg:flex-row items-center">
-        <div className="w-full lg:w-1/2 text-gray-800 py-6 lg:py-24">
+        <div className="w-full lg:w-1/2 text-gray-800 py-6 lg:py-24 hero-content">
           <p className="text-xl sm:text-3xl text-teal-600 font-bold mb-2 text-center">Assalamu Alaikum wa Rahmatullah</p>
           <h1 className="text-3xl sm:text-5xl md:text-6xl font-bold mb-2 sm:mb-4 leading-tight">Welcome to my official website</h1>
           <p className="text-sm sm:text-lg text-gray-600 mb-3 sm:mb-6">
@@ -38,27 +38,27 @@ function Hero() {
           </p>
 
           {/* Buttons */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 sm:gap-4">
-            <a href="#" className="flex items-center justify-center px-4 sm:px-6 py-2 sm:py-3 bg-teal-600 text-white rounded-md shadow hover:bg-teal-700 transition duration-300 text-sm sm:text-base">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 sm:gap-4" style={{ opacity: 1, visibility: 'visible' }}>
+            <a href="#" className="flex items-center justify-center px-4 sm:px-6 py-2 sm:py-3 bg-teal-600 text-white rounded-md shadow hover:bg-teal-700 transition duration-300 text-sm sm:text-base" style={{ opacity: 1, visibility: 'visible' }}>
               <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 sm:h-5 sm:w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
                 <path strokeLinecap="round" strokeLinejoin="round" d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z" />
                 <path strokeLinecap="round" strokeLinejoin="round" d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
               </svg>
               Watch Today's Video
             </a>
-            <a href="#" className="flex items-center justify-center px-4 sm:px-6 py-2 sm:py-3 border border-teal-600 text-teal-600 rounded-md shadow hover:bg-teal-50 transition duration-300 text-sm sm:text-base">
+            <a href="#" className="flex items-center justify-center px-4 sm:px-6 py-2 sm:py-3 border border-teal-600 text-teal-600 rounded-md shadow hover:bg-teal-50 transition duration-300 text-sm sm:text-base" style={{ opacity: 1, visibility: 'visible' }}>
               <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 sm:h-5 sm:w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
                 <path strokeLinecap="round" strokeLinejoin="round" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
               </svg>
               Download Prayer Timetable
             </a>
-            <a href="https://www.youtube.com/@AbuSaad17" target="_blank" rel="noopener noreferrer" className="flex items-center justify-center px-4 sm:px-6 py-2 sm:py-3 bg-red-600 text-white rounded-md shadow hover:bg-red-700 transition duration-300 text-sm sm:text-base">
+            <a href="https://www.youtube.com/@AbuSaad17" target="_blank" rel="noopener noreferrer" className="flex items-center justify-center px-4 sm:px-6 py-2 sm:py-3 bg-red-600 text-white rounded-md shadow hover:bg-red-700 transition duration-300 text-sm sm:text-base" style={{ opacity: 1, visibility: 'visible' }}>
               <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 sm:h-5 sm:w-5 mr-2" fill="currentColor" viewBox="0 0 24 24">
                  <path d="M21.582,6.186c-0.23-0.86-0.908-1.538-1.768-1.768C18.267,4,12,4,12,4S5.733,4,4.186,4.418 c-0.86,0.23-1.538,0.908-1.768,1.768C2,7.733,2,12,2,12s0,4.267,0.418,5.814c0.23,0.86,0.908,1.538,1.768,1.768 C5.733,20,12,20,12,20s6.267,0,7.814-0.418c0.861-0.23,1.538-0.908,1.768-1.768C22,16.267,22,12,22,12S22,7.733,21.582,6.186z M10,15.464V8.536L16,12L10,15.464z"/>
               </svg>
               Subscribe on YouTube
             </a>
-            <a href="https://www.tiktok.com/@1abusaad0" target="_blank" rel="noopener noreferrer" className="flex items-center justify-center px-4 sm:px-6 py-2 sm:py-3 bg-black text-white rounded-md shadow hover:bg-gray-800 transition duration-300 text-sm sm:text-base">
+            <a href="https://www.tiktok.com/@1abusaad0" target="_blank" rel="noopener noreferrer" className="flex items-center justify-center px-4 sm:px-6 py-2 sm:py-3 bg-black text-white rounded-md shadow hover:bg-gray-800 transition duration-300 text-sm sm:text-base" style={{ opacity: 1, visibility: 'visible' }}>
               <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 sm:h-5 sm:w-5 mr-2" fill="currentColor" viewBox="0 0 24 24">
                 <path d="M19.59 6.69a4.83 4.83 0 0 1-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 0 1-5.2 1.74 2.89 2.89 0 0 1 2.31-4.64 2.93 2.93 0 0 1 .88.13V9.4a6.84 6.84 0 0 0-1-.05A6.33 6.33 0 0 0 5 20.1a6.34 6.34 0 0 0 10.86-4.43v-7a8.16 8.16 0 0 0 4.77 1.52v-3.4a4.85 4.85 0 0 1-1-.1z"/>
               </svg>

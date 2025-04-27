@@ -3,7 +3,7 @@ import React from 'react';
 function Resources() {
   return (
     <div className="py-16 px-4 sm:px-6 lg:px-8 bg-white">
-      <div className="max-w-7xl mx-auto">
+      <div className="max-w-7xl mx-auto resources-container">
         {/* Header */}
         <div className="text-center mb-12">
           <h2 className="text-4xl font-bold text-gray-800 mb-4">Islamic Resources</h2>
@@ -14,9 +14,9 @@ function Resources() {
         </div>
 
         {/* Resources Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
           {/* E-Books */}
-          <div className="bg-white rounded-lg shadow-md overflow-hidden">
+          <div className="bg-white rounded-lg shadow-md overflow-hidden resources-card">
             <div className="h-2 bg-teal-600"></div>
             <div className="p-6">
               <div className="w-12 h-12 bg-teal-50 rounded-lg flex items-center justify-center mb-4">
@@ -25,14 +25,14 @@ function Resources() {
                 </svg>
               </div>
               
-              <h3 className="text-xl font-bold text-gray-800 mb-2">E-Books</h3>
+              <h3 className="text-xl font-bold text-gray-800 mb-2">Daily Islamic Reminders</h3>
               <p className="text-gray-600 mb-6">
-                Download free Islamic books on various topics including Tafsir, Hadith, and
-                Islamic history.
+                Gain spiritual insights through daily reminders about Quran, Hadith, and
+                practical Islamic guidance for everyday life.
               </p>
               
               <a href="#" className="text-teal-600 font-medium hover:text-teal-700 flex items-center">
-                Browse Library 
+                View Reminders 
                 <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 ml-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
                 </svg>
@@ -41,7 +41,7 @@ function Resources() {
           </div>
           
           {/* PDF Resources */}
-          <div className="bg-white rounded-lg shadow-md overflow-hidden">
+          <div className="bg-white rounded-lg shadow-md overflow-hidden resources-card">
             <div className="h-2 bg-yellow-500"></div>
             <div className="p-6">
               <div className="w-12 h-12 bg-yellow-50 rounded-lg flex items-center justify-center mb-4">
@@ -66,7 +66,7 @@ function Resources() {
           </div>
           
           {/* Live Classes */}
-          <div className="bg-white rounded-lg shadow-md overflow-hidden">
+          <div className="bg-white rounded-lg shadow-md overflow-hidden resources-card">
             <div className="h-2 bg-blue-500"></div>
             <div className="p-6">
               <div className="w-12 h-12 bg-blue-50 rounded-lg flex items-center justify-center mb-4">
@@ -82,6 +82,30 @@ function Resources() {
               
               <a href="#" className="text-blue-500 font-medium hover:text-blue-600 flex items-center">
                 View Schedule
+                <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 ml-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                </svg>
+              </a>
+            </div>
+          </div>
+          
+          {/* Blog */}
+          <div className="bg-white rounded-lg shadow-md overflow-hidden resources-card">
+            <div className="h-2 bg-purple-600"></div>
+            <div className="p-6">
+              <div className="w-12 h-12 bg-purple-50 rounded-lg flex items-center justify-center mb-4">
+                <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6 text-purple-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 20H5a2 2 0 01-2-2V6a2 2 0 012-2h10a2 2 0 012 2v1m2 13a2 2 0 01-2-2V7m2 13a2 2 0 002-2V9a2 2 0 00-2-2h-2m-4-3H9M7 16h6M7 8h6v4H7V8z" />
+                </svg>
+              </div>
+              
+              <h3 className="text-xl font-bold text-gray-800 mb-2">Blog</h3>
+              <p className="text-gray-600 mb-6">
+                Explore articles on contemporary Islamic topics, reflections on the Quran, and spiritual guidance for daily life.
+              </p>
+              
+              <a href="#" className="text-purple-600 font-medium hover:text-purple-700 flex items-center">
+                Read Articles
                 <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 ml-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
                 </svg>

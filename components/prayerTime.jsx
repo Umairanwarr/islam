@@ -78,7 +78,7 @@ function PrayerTime() {
   };
 
   return (
-    <div className="py-10 px-4 sm:px-6 lg:px-8 bg-gray-50">
+    <div className="py-10 px-4 sm:px-6 lg:px-8 bg-gray-50 prayer-time-container">
       <div className="max-w-6xl mx-auto">
         <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-6">
           <div>
@@ -87,7 +87,8 @@ function PrayerTime() {
           </div>
           
           <div className="mt-4 md:mt-0 flex items-center space-x-8">
-            <div className="flex items-center space-x-3">
+            <div className="flex flex-col items-start space-y-1">
+              <span className="text-sm text-teal-600 font-medium">Choose a city from below:</span>
               <select 
                 value={selectedCity} 
                 onChange={handleCityChange}
@@ -120,7 +121,7 @@ function PrayerTime() {
           </div>
         ) : (
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-6 gap-4">
-            <div className="bg-white rounded-lg shadow-md overflow-hidden border-t-4 border-teal-600">
+            <div className="bg-white rounded-lg shadow-md overflow-hidden border-t-4 border-teal-600 prayer-time-item">
               <div className="p-4 text-center">
                 <h3 className="font-medium text-gray-700">Fajr</h3>
                 <p className="text-2xl font-bold mt-2">{formatTime(prayerTimes?.Fajr)}</p>
@@ -128,7 +129,7 @@ function PrayerTime() {
               </div>
             </div>
             
-            <div className="bg-white rounded-lg shadow-md overflow-hidden border-t-4 border-yellow-500">
+            <div className="bg-white rounded-lg shadow-md overflow-hidden border-t-4 border-yellow-500 prayer-time-item">
               <div className="p-4 text-center">
                 <h3 className="font-medium text-gray-700">Sunrise</h3>
                 <p className="text-2xl font-bold mt-2">{formatTime(prayerTimes?.Sunrise)}</p>
@@ -136,7 +137,7 @@ function PrayerTime() {
               </div>
             </div>
             
-            <div className="bg-white rounded-lg shadow-md overflow-hidden border-t-4 border-blue-500">
+            <div className="bg-white rounded-lg shadow-md overflow-hidden border-t-4 border-blue-500 prayer-time-item">
               <div className="p-4 text-center">
                 <h3 className="font-medium text-gray-700">Dhuhr</h3>
                 <p className="text-2xl font-bold mt-2">{formatTime(prayerTimes?.Dhuhr)}</p>
@@ -144,7 +145,7 @@ function PrayerTime() {
               </div>
             </div>
             
-            <div className="bg-white rounded-lg shadow-md overflow-hidden border-t-4 border-orange-500">
+            <div className="bg-white rounded-lg shadow-md overflow-hidden border-t-4 border-orange-500 prayer-time-item">
               <div className="p-4 text-center">
                 <h3 className="font-medium text-gray-700">Asr</h3>
                 <p className="text-2xl font-bold mt-2">{formatTime(prayerTimes?.Asr)}</p>
@@ -152,7 +153,7 @@ function PrayerTime() {
               </div>
             </div>
             
-            <div className="bg-white rounded-lg shadow-md overflow-hidden border-t-4 border-red-500">
+            <div className="bg-white rounded-lg shadow-md overflow-hidden border-t-4 border-red-500 prayer-time-item">
               <div className="p-4 text-center">
                 <h3 className="font-medium text-gray-700">Maghrib</h3>
                 <p className="text-2xl font-bold mt-2">{formatTime(prayerTimes?.Maghrib)}</p>
@@ -160,7 +161,7 @@ function PrayerTime() {
               </div>
             </div>
             
-            <div className="bg-white rounded-lg shadow-md overflow-hidden border-t-4 border-indigo-500">
+            <div className="bg-white rounded-lg shadow-md overflow-hidden border-t-4 border-indigo-500 prayer-time-item">
               <div className="p-4 text-center">
                 <h3 className="font-medium text-gray-700">Isha</h3>
                 <p className="text-2xl font-bold mt-2">{formatTime(prayerTimes?.Isha)}</p>
