@@ -121,11 +121,12 @@ const AskImamForm = () => {
                   ></textarea>
                 </div>
 
-                <button
-                  type="submit"
-                  disabled={isSubmitting}
-                  className="w-full py-3 px-6 bg-[#08948c] text-white rounded-md shadow hover:bg-[#067a73] transition duration-300 flex items-center justify-center"
-                >
+                <div className="flex justify-center">
+                  <button
+                    type="submit"
+                    disabled={isSubmitting}
+                    className="py-2 px-5 bg-[#08948c] text-white rounded-lg shadow hover:bg-[#067a73] transition duration-300 flex items-center justify-center"
+                  >
                   {isSubmitting ? (
                     <>
                       <svg className="animate-spin -ml-1 mr-3 h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
@@ -137,12 +138,14 @@ const AskImamForm = () => {
                   ) : (
                     <>
                       Submit Question
-                      <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 ml-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                      <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 ml-2" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                        <path d="M22 2L11 13"></path>
+                        <path d="M22 2L15 22L11 13L2 9L22 2Z"></path>
                       </svg>
                     </>
                   )}
                 </button>
+                </div>
               </form>
             </div>
           </div>
