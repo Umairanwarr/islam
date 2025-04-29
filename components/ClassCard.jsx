@@ -20,7 +20,7 @@ const ClassCard = ({ classItem }) => {
         justifyContent: 'flex-end',
       }}
     >
-      <div className="absolute inset-0" style={{background: 'rgba(255,255,255,0.7)', zIndex: 1}} />
+      <div className="absolute inset-0" style={{background: 'rgb(230 232 231 / 15%)', zIndex: 1}} />
       <div className="relative z-10 flex flex-col gap-2">
         <div className="flex items-center gap-3 mb-2">
           <span className="text-white text-xs font-semibold px-3 py-1 rounded-full" style={{background:'#08948c'}}>Featured</span>

@@ -120,7 +120,7 @@ function PrayerTime() {
             <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-teal-500"></div>
           </div>
         ) : (
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-6 gap-4">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-7 gap-4">
             <div className="bg-white rounded-lg shadow-md overflow-hidden border-t-4 border-teal-600 prayer-time-item">
               <div className="p-4 text-center">
                 <h3 className="font-medium text-gray-700">Fajr</h3>
@@ -166,6 +166,14 @@ function PrayerTime() {
                 <h3 className="font-medium text-gray-700">Isha</h3>
                 <p className="text-2xl font-bold mt-2">{formatTime(prayerTimes?.Isha)}</p>
                 <p className="text-sm text-gray-500 mt-1">Begins</p>
+              </div>
+            </div>
+
+            <div className="bg-white rounded-lg shadow-md overflow-hidden border-t-4 border-purple-500 prayer-time-item">
+              <div className="p-4 text-center">
+                <h3 className="font-medium text-gray-700">Jummah</h3>
+                <p className="text-2xl font-bold mt-2">{formatTime(prayerTimes?.Dhuhr)}</p>
+                <p className="text-sm text-gray-500 mt-1">Friday Prayer</p>
               </div>
             </div>
           </div>
