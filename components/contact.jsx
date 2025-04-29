@@ -1,12 +1,28 @@
-import React, { useState } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
+import emailjs from '@emailjs/browser';
+
+// EmailJS credentials
+const SERVICE_ID = 'service_lhmpmij';
+const TEMPLATE_ID = 'template_l2cgggh'; // Contact form template ID
+const PUBLIC_KEY = 'mekVCr_83sqRQIbjD';
 
 function Contact() {
+  const form = useRef();
   const [formData, setFormData] = useState({
-    fullName: '',
-    email: '',
+    user_name: '',
+    user_email: '',
     subject: '',
     message: ''
   });
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [isSubmitted, setIsSubmitted] = useState(false);
+  const [error, setError] = useState(null);
+
+  // Initialize EmailJS when component mounts
+  useEffect(() => {
+    emailjs.init(PUBLIC_KEY);
+    console.log('EmailJS initialized with public key:', PUBLIC_KEY);
+  }, []);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -14,20 +30,48 @@ function Contact() {
       ...prevState,
       [name]: value
     }));
+    console.log('Form field updated:', { name, value });
   };
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    // Here you would typically handle the form submission
-    console.log('Form submitted:', formData);
-    // Reset form after submission
-    setFormData({
-      fullName: '',
-      email: '',
-      subject: '',
-      message: ''
-    });
-    // Show success message or handle errors
+    setIsSubmitting(true);
+    setError(null);
+
+    console.log('Starting email submission process...');
+    console.log('Form data:', formData);
+    console.log('EmailJS credentials:', { SERVICE_ID, TEMPLATE_ID });
+
+    // Send notification email to admin
+    emailjs.sendForm(SERVICE_ID, TEMPLATE_ID, form.current, {
+      publicKey: PUBLIC_KEY,
+    })
+      .then((result) => {
+        console.log('User confirmation sent successfully:', result.text);
+        setIsSubmitting(false);
+        setIsSubmitted(true);
+
+        // Reset form after submission
+        setFormData({
+          user_name: '',
+          user_email: '',
+          subject: '',
+          message: ''
+        });
+
+        // Reset success message after 10 seconds
+        setTimeout(() => {
+          setIsSubmitted(false);
+        }, 10000);
+      })
+      .catch((error) => {
+        console.error('Email sending failed:', error);
+        console.error('Error details:', error.text || 'No error text available');
+        console.error('Error status:', error.status || 'No status available');
+
+        setIsSubmitting(false);
+        setError(`Failed to send your message: ${error.text || 'Unknown error'}. Please try again later.`);
+      });
   };
 
   return (
@@ -93,21 +137,21 @@ function Contact() {
                   <path d="M24 4.557c-.883.392-1.832.656-2.828.775 1.017-.609 1.798-1.574 2.165-2.724-.951.564-2.005.974-3.127 1.195-.897-.957-2.178-1.555-3.594-1.555-3.179 0-5.515 2.966-4.797 6.045-4.091-.205-7.719-2.165-10.148-5.144-1.29 2.213-.669 5.108 1.523 6.574-.806-.026-1.566-.247-2.229-.616-.054 2.281 1.581 4.415 3.949 4.89-.693.188-1.452.232-2.224.084.626 1.956 2.444 3.379 4.6 3.419-2.07 1.623-4.678 2.348-7.29 2.04 2.179 1.397 4.768 2.212 7.548 2.212 9.142 0 14.307-7.721 13.995-14.646.962-.695 1.797-1.562 2.457-2.549z" />
                 </svg>
               </a>
-              
+
               {/* Instagram */}
               <a href="https://www.instagram.com/1abusaad17?igsh=Z2dwdG5tbG9oMHB0" target="_blank" rel="noopener noreferrer" className="bg-green-50 p-3 rounded-full hover:bg-green-100 transition duration-300">
                 <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6 text-teal-600" fill="currentColor" viewBox="0 0 24 24">
                   <path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z" />
                 </svg>
               </a>
-              
+
               {/* YouTube */}
               <a href="https://www.youtube.com/@AbuSaad17" target="_blank" rel="noopener noreferrer" className="bg-green-50 p-3 rounded-full hover:bg-green-100 transition duration-300">
                 <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6 text-teal-600" fill="currentColor" viewBox="0 0 24 24">
                   <path d="M19.615 3.184c-3.604-.246-11.631-.245-15.23 0-3.897.266-4.356 2.62-4.385 8.816.029 6.185.484 8.549 4.385 8.816 3.6.245 11.626.246 15.23 0 3.897-.266 4.356-2.62 4.385-8.816-.029-6.185-.484-8.549-4.385-8.816zm-10.615 12.816v-8l8 3.993-8 4.007z" />
                 </svg>
               </a>
-              
+
               {/* TikTok */}
               <a href="https://www.tiktok.com/@1abusaad0" target="_blank" rel="noopener noreferrer" className="bg-green-50 p-3 rounded-full hover:bg-green-100 transition duration-300">
                 <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6 text-teal-600" fill="currentColor" viewBox="0 0 24 24">
@@ -119,38 +163,56 @@ function Contact() {
 
           {/* Contact Form */}
           <div>
-            <div className="bg-white rounded-lg border border-gray-200 shadow-sm overflow-hidden">
-              <div className="p-6">
-                <h2 className="text-2xl font-bold text-gray-800 mb-6">Send a Message</h2>
-                <form onSubmit={handleSubmit}>
+            {isSubmitted ? (
+              <div className="bg-green-50 border border-green-200 rounded-lg p-6 text-center">
+                <div className="flex justify-center mb-4">
+                  <svg xmlns="http://www.w3.org/2000/svg" className="h-12 w-12 text-green-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                  </svg>
+                </div>
+                <h3 className="text-xl font-bold text-green-800 mb-2">Message Sent Successfully</h3>
+                <p className="text-green-700">
+                  Thank you for your message. We will get back to you as soon as possible.
+                </p>
+              </div>
+            ) : (
+              <div className="bg-white rounded-lg border border-gray-200 shadow-sm overflow-hidden">
+                <div className="p-6">
+                  <h2 className="text-2xl font-bold text-gray-800 mb-6">Send a Message</h2>
+                <form ref={form} onSubmit={handleSubmit}>
+                  {/* Hidden fields to ensure EmailJS has all required data */}
+                  <input type="hidden" name="to_email" value={formData.user_email} />
+                  <input type="hidden" name="reply_to" value={formData.user_email} />
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 mb-6">
                     <div>
                       <label htmlFor="fullName" className="block text-sm font-medium text-gray-700 mb-1">Full Name</label>
                       <input
                         type="text"
                         id="fullName"
-                        name="fullName"
-                        value={formData.fullName}
+                        name="user_name"
+                        value={formData.user_name}
                         onChange={handleChange}
                         required
                         className="w-full py-3 px-4 bg-white rounded-md border border-gray-300 shadow-sm focus:ring-2 focus:ring-teal-500 focus:border-transparent"
+                        placeholder="Enter your name"
                       />
                     </div>
-                    
+
                     <div>
                       <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-1">Email Address</label>
                       <input
                         type="email"
                         id="email"
-                        name="email"
-                        value={formData.email}
+                        name="user_email"
+                        value={formData.user_email}
                         onChange={handleChange}
                         required
                         className="w-full py-3 px-4 bg-white rounded-md border border-gray-300 shadow-sm focus:ring-2 focus:ring-teal-500 focus:border-transparent"
+                        placeholder="Enter your email"
                       />
                     </div>
                   </div>
-                  
+
                   <div className="mb-6">
                     <label htmlFor="subject" className="block text-sm font-medium text-gray-700 mb-1">Subject</label>
                     <input
@@ -163,7 +225,7 @@ function Contact() {
                       className="w-full py-3 px-4 bg-white rounded-md border border-gray-300 shadow-sm focus:ring-2 focus:ring-teal-500 focus:border-transparent"
                     />
                   </div>
-                  
+
                   <div className="mb-6">
                     <label htmlFor="message" className="block text-sm font-medium text-gray-700 mb-1">Message</label>
                     <textarea
@@ -176,16 +238,40 @@ function Contact() {
                       className="w-full py-3 px-4 bg-white rounded-md border border-gray-300 shadow-sm focus:ring-2 focus:ring-teal-500 focus:border-transparent"
                     ></textarea>
                   </div>
-                  
+
                   <button
                     type="submit"
-                    className="w-full py-3 px-6 bg-teal-600 text-white rounded-md shadow hover:bg-teal-700 transition duration-300"
+                    disabled={isSubmitting}
+                    className="w-full py-3 px-6 bg-[#08948c] text-white rounded-md shadow hover:bg-[#067a73] transition duration-300 flex items-center justify-center"
                   >
-                    Send Message
+                    {isSubmitting ? (
+                      <>
+                        <svg className="animate-spin -ml-1 mr-3 h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                          <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                          <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                        </svg>
+                        Sending...
+                      </>
+                    ) : (
+                      <>
+                        Send Message
+                        <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 ml-2" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                          <path d="M22 2L11 13"></path>
+                          <path d="M22 2L15 22L11 13L2 9L22 2Z"></path>
+                        </svg>
+                      </>
+                    )}
                   </button>
+
+                  {error && (
+                    <div className="mt-4 p-3 bg-red-50 border border-red-200 rounded-md text-red-700 text-center">
+                      {error}
+                    </div>
+                  )}
                 </form>
               </div>
             </div>
+            )}
           </div>
         </div>
       </div>

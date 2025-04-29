@@ -1,13 +1,21 @@
-import React, { useState } from 'react';
+import React, { useState, useRef } from 'react';
+import emailjs from '@emailjs/browser';
+
+// EmailJS credentials
+const SERVICE_ID = 'service_lhmpmij';
+const TEMPLATE_ID = 'template_l5z7bte'; // Admin notification template ID for Ask Imam form
+const PUBLIC_KEY = 'mekVCr_83sqRQIbjD';
 
 const AskImamForm = () => {
+  const form = useRef();
   const [formData, setFormData] = useState({
-    fullName: '',
-    email: '',
-    question: ''
+    user_name: '',
+    user_email: '',
+    message: ''
   });
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isSubmitted, setIsSubmitted] = useState(false);
+  const [error, setError] = useState(null);
 
   const handleChange = (e) => {
     const { name, value, type, checked } = e.target;
@@ -20,25 +28,41 @@ const AskImamForm = () => {
   const handleSubmit = (e) => {
     e.preventDefault();
     setIsSubmitting(true);
+    setError(null);
 
-    // Simulate form submission
-    setTimeout(() => {
-      console.log('Question submitted:', formData);
-      setIsSubmitting(false);
-      setIsSubmitted(true);
+    console.log('Starting email submission process...');
+    console.log('Form data:', formData);
+    console.log('EmailJS credentials:', { SERVICE_ID, TEMPLATE_ID });
 
-      // Reset form after submission
-      setFormData({
-        fullName: '',
-        email: '',
-        question: ''
+    // Send notification email to admin
+    emailjs.sendForm(SERVICE_ID, TEMPLATE_ID, form.current, {
+      publicKey: PUBLIC_KEY,
+    })
+      .then((result) => {
+        console.log('User confirmation sent successfully:', result.text);
+        setIsSubmitting(false);
+        setIsSubmitted(true);
+
+        // Reset form after submission
+        setFormData({
+          user_name: '',
+          user_email: '',
+          message: ''
+        });
+
+        // Reset success message after 10 seconds
+        setTimeout(() => {
+          setIsSubmitted(false);
+        }, 10000);
+      })
+      .catch((error) => {
+        console.error('Email sending failed:', error);
+        console.error('Error details:', error.text || 'No error text available');
+        console.error('Error status:', error.status || 'No status available');
+
+        setIsSubmitting(false);
+        setError(`Failed to send your question: ${error.text || 'Unknown error'}. Please try again later.`);
       });
-
-      // Reset success message after 5 seconds
-      setTimeout(() => {
-        setIsSubmitted(false);
-      }, 5000);
-    }, 1500);
   };
 
   return (
@@ -53,7 +77,7 @@ const AskImamForm = () => {
             </div>
             <h3 className="text-xl font-bold text-green-800 mb-2">Question Submitted Successfully</h3>
             <p className="text-green-700">
-              Thank you for your question. You will receive a response via email within 3-5 days, insha'Allah.
+              Thank you for your question. You will receive a response within 3-5 days, insha'Allah.
             </p>
           </div>
         ) : (
@@ -76,15 +100,15 @@ const AskImamForm = () => {
                 and receive a personalized response from me directly, insha'Allah.
               </p>
 
-              <form onSubmit={handleSubmit}>
+              <form ref={form} onSubmit={handleSubmit}>
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 mb-6">
                   <div>
                     <label htmlFor="fullName" className="block text-sm font-medium text-gray-700 mb-1">Full Name</label>
                     <input
                       type="text"
                       id="fullName"
-                      name="fullName"
-                      value={formData.fullName}
+                      name="user_name"
+                      value={formData.user_name}
                       onChange={handleChange}
                       required
                       className="w-full py-3 px-4 bg-white rounded-md border border-gray-300 shadow-sm focus:ring-2 focus:ring-teal-500 focus:border-transparent"
@@ -97,8 +121,8 @@ const AskImamForm = () => {
                     <input
                       type="email"
                       id="email"
-                      name="email"
-                      value={formData.email}
+                      name="user_email"
+                      value={formData.user_email}
                       onChange={handleChange}
                       required
                       className="w-full py-3 px-4 bg-white rounded-md border border-gray-300 shadow-sm focus:ring-2 focus:ring-teal-500 focus:border-transparent"
@@ -111,8 +135,8 @@ const AskImamForm = () => {
                   <label htmlFor="question" className="block text-sm font-medium text-gray-700 mb-1">Your Question</label>
                   <textarea
                     id="question"
-                    name="question"
-                    value={formData.question}
+                    name="message"
+                    value={formData.message}
                     onChange={handleChange}
                     required
                     rows="6"
@@ -125,7 +149,7 @@ const AskImamForm = () => {
                   <button
                     type="submit"
                     disabled={isSubmitting}
-                    className="py-2 px-5 bg-[#08948c] text-white rounded-lg shadow hover:bg-[#067a73] transition duration-300 flex items-center justify-center"
+                    className="py-2 px-5 bg-[#08948c] text-white rounded-full shadow hover:bg-[#067a73] transition duration-300 flex items-center justify-center"
                   >
                   {isSubmitting ? (
                     <>
@@ -146,6 +170,11 @@ const AskImamForm = () => {
                   )}
                 </button>
                 </div>
+                {error && (
+                  <div className="mt-4 p-3 bg-red-50 border border-red-200 rounded-md text-red-700 text-center">
+                    {error}
+                  </div>
+                )}
               </form>
             </div>
           </div>
