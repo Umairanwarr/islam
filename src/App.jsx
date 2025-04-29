@@ -3,6 +3,7 @@ import LandingPage from '../pages/landingPage';
 import SurahList from '../pages/surahList';
 import SurahDetail from '../pages/surahDetail';
 import DashboardPage from '../pages/dashboard';
+import LiveClass from '../pages/liveClass';
 import './App.css';
 
 function App() {
@@ -13,6 +14,7 @@ function App() {
         <Route path="/surah" element={<SurahList />} />
         <Route path="/surah/:id" element={<SurahDetail />} />
         <Route path="/mydashboard" element={<DashboardPage />} />
+        <Route path="/live-class" element={<LiveClass />} />
       </Routes>
     </Router>
   );
