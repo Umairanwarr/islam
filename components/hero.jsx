@@ -1,8 +1,48 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import { db } from '../src/firebase';
+import { doc, getDoc } from 'firebase/firestore';
+import { getFileUrl } from '../src/appwrite';
 
 function Hero() {
   const [videoPlaying, setVideoPlaying] = useState(false);
-  
+  const [todayVideoLink, setTodayVideoLink] = useState('');
+  const [embeddedVideoId, setEmbeddedVideoId] = useState('ztT8RUczkW0'); // Default video ID
+  const [prayerPdfUrl, setPrayerPdfUrl] = useState('');
+
+  useEffect(() => {
+    const fetchSettings = async () => {
+      try {
+        // Fetch video links
+        const videoLinksDoc = await getDoc(doc(db, 'settings', 'videoLinks'));
+        if (videoLinksDoc.exists()) {
+          const data = videoLinksDoc.data();
+
+          // Today's video link (for the button)
+          if (data.todayVideo) {
+            setTodayVideoLink(data.todayVideo);
+          }
+
+          // Embedded video ID
+          if (data.embeddedVideoId) {
+            setEmbeddedVideoId(data.embeddedVideoId);
+          }
+        }
+
+        // Fetch prayer PDF
+        const prayerPdfDoc = await getDoc(doc(db, 'settings', 'prayerPdf'));
+        if (prayerPdfDoc.exists() && prayerPdfDoc.data().fileId) {
+          const fileId = prayerPdfDoc.data().fileId;
+          const url = getFileUrl(fileId);
+          setPrayerPdfUrl(url);
+        }
+      } catch (error) {
+        console.error('Error fetching settings:', error);
+      }
+    };
+
+    fetchSettings();
+  }, []);
+
   const playVideo = () => {
     setVideoPlaying(true);
     // This will trigger the iframe to play via postMessage API when clicked
@@ -39,14 +79,39 @@ function Hero() {
 
           {/* Buttons */}
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 sm:gap-4" style={{ opacity: 1, visibility: 'visible' }}>
-            <a href="#" className="flex items-center justify-center px-4 sm:px-6 py-2 sm:py-3 bg-teal-600 text-white rounded-md shadow hover:bg-teal-700 transition duration-300 text-sm sm:text-base" style={{ opacity: 1, visibility: 'visible' }}>
+            <a
+              href={todayVideoLink || "#"}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="flex items-center justify-center px-4 sm:px-6 py-2 sm:py-3 bg-teal-600 text-white rounded-md shadow hover:bg-teal-700 transition duration-300 text-sm sm:text-base"
+              style={{ opacity: 1, visibility: 'visible' }}
+              onClick={(e) => {
+                if (!todayVideoLink) {
+                  e.preventDefault();
+                  alert('No video link available');
+                }
+              }}
+            >
               <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 sm:h-5 sm:w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
                 <path strokeLinecap="round" strokeLinejoin="round" d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z" />
                 <path strokeLinecap="round" strokeLinejoin="round" d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
               </svg>
               Watch Today's Video
             </a>
-            <a href="#" className="flex items-center justify-center px-4 sm:px-6 py-2 sm:py-3 border border-teal-600 text-teal-600 rounded-md shadow hover:bg-teal-50 transition duration-300 text-sm sm:text-base" style={{ opacity: 1, visibility: 'visible' }}>
+            <a
+              href={prayerPdfUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              download="Prayer_Timetable.pdf"
+              className="flex items-center justify-center px-4 sm:px-6 py-2 sm:py-3 border border-teal-600 text-teal-600 rounded-md shadow hover:bg-teal-50 transition duration-300 text-sm sm:text-base"
+              style={{ opacity: 1, visibility: 'visible' }}
+              onClick={(e) => {
+                if (!prayerPdfUrl) {
+                  e.preventDefault();
+                  alert('Prayer timetable PDF not available');
+                }
+              }}
+            >
               <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 sm:h-5 sm:w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
                 <path strokeLinecap="round" strokeLinejoin="round" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
               </svg>
@@ -73,16 +138,16 @@ function Hero() {
             <div className="relative pb-[56.25%] h-0">
               <iframe
                 className="youtube-iframe absolute top-0 left-0 w-full h-full"
-                src="https://www.youtube.com/embed/ztT8RUczkW0?enablejsapi=1"
+                src={`https://www.youtube.com/embed/${embeddedVideoId}?enablejsapi=1`}
                 title="YouTube video player"
                 frameBorder="0"
                 allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
                 allowFullScreen>
               </iframe>
-              
+
               {/* Custom play button overlay */}
               {!videoPlaying && (
-                <div 
+                <div
                   className="absolute inset-0 flex items-center justify-center cursor-pointer bg-black/50"
                   onClick={playVideo}
                 >

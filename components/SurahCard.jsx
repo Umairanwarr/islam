@@ -15,12 +15,10 @@ export default function SurahCard({ id, name, verses, imageUrl, onDelete, onEdit
         if (!imageUrl.startsWith('http')) {
           // It's a file ID, generate the URL
           const url = getFileUrl(imageUrl);
-          console.log(`Generated URL for ${name} from ID ${imageUrl}:`, url);
           setActualImageUrl(url);
           setDebugInfo(`File ID: ${imageUrl.substring(0, 10)}...`);
         } else {
           // It's already a URL
-          console.log(`Using direct URL for ${name}:`, imageUrl);
           setActualImageUrl(imageUrl);
           setDebugInfo(imageUrl.substring(0, 30) + '...');
         }
@@ -28,14 +26,11 @@ export default function SurahCard({ id, name, verses, imageUrl, onDelete, onEdit
         console.error(`Error generating URL for ${name}:`, error);
         setImgError(true);
       }
-    } else {
-      console.log(`No image for ${name}`);
     }
   }, [imageUrl, name]);
 
   // Handle image loading error
   const handleImageError = () => {
-    console.error(`Failed to load image for ${name}:`, actualImageUrl);
     setImgError(true);
   };
 

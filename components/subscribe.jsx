@@ -16,7 +16,7 @@ function Subscribe() {
   // Initialize EmailJS when component mounts
   useEffect(() => {
     emailjs.init(PUBLIC_KEY);
-    console.log('EmailJS initialized with public key:', PUBLIC_KEY);
+   
   }, []);
 
   const handleSubmit = (e) => {

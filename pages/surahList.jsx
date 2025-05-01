@@ -16,7 +16,7 @@ export default function SurahList() {
 
   useEffect(() => {
     // Filter surahs whenever searchQuery or surahs change
-    const filtered = surahs.filter(surah => 
+    const filtered = surahs.filter(surah =>
       surah.surahName.toLowerCase().includes(searchQuery.toLowerCase())
     );
     setFilteredSurahs(filtered);
@@ -24,7 +24,7 @@ export default function SurahList() {
 
   const fetchSurahs = async () => {
     try {
-      console.log("Fetching surahs for SurahList page...");
+     
       // Create a query with ordering by createdAt (newest first)
       const surahsQuery = query(
         collection(db, 'surahs'),
@@ -43,33 +43,33 @@ export default function SurahList() {
           : new Date().toISOString()
       }));
 
-      console.log("Fetched surahs for list page:", surahList);
+      
       setSurahs(surahList);
       setFilteredSurahs(surahList);
     } catch (error) {
-      console.error("Error fetching surahs for list page:", error);
+
     }
   };
 
   return (
     <div>
       <SurahHeader />
-      <div className="pl-4 md:pl-10 mt-8 pb-8">
-        <h1 className="text-3xl font-bold mb-6">Featured Surahs</h1>
-        <div className="flex justify-center mb-8 px-2 md:px-0">
+      <div className="px-4 sm:px-6 lg:px-8 mt-6 sm:mt-8 pb-6 sm:pb-8">
+        <h1 className="text-2xl sm:text-3xl font-bold mb-4 sm:mb-6">Featured Surahs</h1>
+        <div className="flex justify-center mb-6 sm:mb-8">
           <div className="w-full max-w-md">
             <input
               type="text"
               placeholder="Search surahs..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-teal-500 focus:border-transparent"
+              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#08948c] focus:border-transparent"
             />
           </div>
         </div>
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6 px-2 md:px-0">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
           {filteredSurahs.map((surah, idx) => {
-            console.log(`SurahList rendering card for ${surah.surahName}:`, surah);
+           
             return (
               <SurahCard
                 key={surah.id || idx}

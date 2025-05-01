@@ -11,11 +11,9 @@ export const initAnimations = () => {
     nullTargetWarn: false
   });
 
-  console.log('Initializing animations...');
-  
   // Animate hero section
   animateHero();
-  
+
   // Animate sections on scroll
   animatePrayerTime();
   animateAbout();
@@ -27,17 +25,15 @@ export const initAnimations = () => {
   animateContact();
   animateFooter();
 
-  // Debug
-  console.log('All animations initialized!');
 };
 
 // Hero section animations (runs immediately)
 const animateHero = () => {
   // Make sure all hero elements are visible first
   gsap.set('.hero-content a', { opacity: 1, y: 0 });
-  
+
   const heroTl = gsap.timeline({ defaults: { ease: 'power3.out' } });
-  
+
   heroTl
     .from('.hero-content h1', { opacity: 0, y: 50, duration: 1 })
     .from('.hero-content p', { opacity: 0, y: 30, duration: 0.8 }, '-=0.6');
@@ -66,7 +62,7 @@ const animateAbout = () => {
       start: 'top 70%',
     }
   });
-  
+
   aboutTl
     .from('.about-image', { opacity: 0, x: -50, duration: 1 })
     .from('.about-content', { opacity: 0, x: 50, duration: 1 }, '-=0.7');
@@ -114,7 +110,6 @@ const animateDonation = () => {
 
 // Testimonials section animations
 const animateTestimonials = () => {
-  console.log('Testimonials animation is now handled within the component');
   // Animation is now directly in the component for better control
 };
 
@@ -126,7 +121,7 @@ const animateSubscribe = () => {
       start: 'top 75%',
     }
   });
-  
+
   subscribeTl
     .from('.subscribe-title', { opacity: 0, y: 30, duration: 0.7 })
     .from('.subscribe-text', { opacity: 0, y: 20, duration: 0.7 }, '-=0.5')
@@ -141,7 +136,7 @@ const animateContact = () => {
       start: 'top 70%',
     }
   });
-  
+
   contactTl
     .from('.contact-info', { opacity: 0, x: -40, duration: 0.8 })
     .from('.contact-form', { opacity: 0, x: 40, duration: 0.8 }, '-=0.6');
@@ -158,4 +153,4 @@ const animateFooter = () => {
     y: 20,
     duration: 0.8
   });
-}; 
+};

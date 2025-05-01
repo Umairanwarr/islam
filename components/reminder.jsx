@@ -15,8 +15,8 @@ function Reminder() {
         const lastUpdateDate = lastUpdate ? new Date(lastUpdate) : null;
 
         // If we have a stored verse and it was updated today after 12 PM, use it
-        if (storedVerse && lastUpdateDate && 
-            lastUpdateDate >= new Date(today.setHours(12, 0, 0, 0)) && 
+        if (storedVerse && lastUpdateDate &&
+            lastUpdateDate >= new Date(today.setHours(12, 0, 0, 0)) &&
             lastUpdateDate < new Date(today.setHours(24, 0, 0, 0))) {
           setVerse(JSON.parse(storedVerse));
           setLoading(false);
@@ -27,7 +27,7 @@ function Reminder() {
         const randomSurah = Math.floor(Math.random() * 114) + 1;
         const response = await fetch(`https://api.alquran.cloud/v1/surah/${randomSurah}/en.sahih`);
         const data = await response.json();
-        
+
         if (data.data && data.data.ayahs) {
           // Get a random verse from the surah
           const randomVerse = Math.floor(Math.random() * data.data.ayahs.length);
@@ -36,11 +36,11 @@ function Reminder() {
             surah: data.data.name,
             number: data.data.ayahs[randomVerse].numberInSurah
           };
-          
+
           // Store the new verse and update time
           localStorage.setItem('dailyVerse', JSON.stringify(newVerse));
           localStorage.setItem('lastVerseUpdate', new Date().toISOString());
-          
+
           setVerse(newVerse);
         }
       } catch (error) {
@@ -59,7 +59,7 @@ function Reminder() {
         <div className="bg-white rounded-lg shadow-md overflow-hidden">
           <div className="p-8">
             <h2 className="text-3xl font-bold text-gray-800 mb-6 text-center">Verse of the Day</h2>
-            
+
             {loading ? (
               <div className="flex justify-center items-center h-32">
                 <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-teal-600"></div>
@@ -76,7 +76,7 @@ function Reminder() {
             )}
 
             <div className="flex justify-center mt-8">
-              <a href="#" className="inline-flex items-center justify-center px-8 py-3 border-2 border-teal-600 text-teal-600 rounded-full hover:bg-teal-50 transition duration-300 text-lg font-medium">
+              <a href="/daily-reminder" className="inline-flex items-center justify-center px-8 py-3 border-2 border-teal-600 text-teal-600 rounded-full hover:bg-teal-50 transition duration-300 text-lg font-medium">
                 View Daily Reminder
               </a>
             </div>

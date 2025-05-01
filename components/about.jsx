@@ -2,18 +2,18 @@ import React from 'react';
 
 function About() {
   return (
-    <div className="py-16 px-4 sm:px-6 lg:px-8 bg-gray-50 about-section">
+    <div id="about" className="py-16 px-4 sm:px-6 lg:px-8 bg-gray-50 about-section">
       <div className="max-w-7xl mx-auto">
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-10 items-center">
           {/* Image Column */}
           <div className="about-image">
-            <img 
-              src="/about-me.jpg" 
-              alt="Imam Abu Saad" 
+            <img
+              src="/about-me.jpg"
+              alt="Imam Abu Saad"
               className="rounded-lg shadow-md w-full"
             />
           </div>
-          
+
           {/* Content Column */}
           <div className="about-content">
             <h2 className="text-4xl font-bold text-gray-800 mb-6">About Me</h2>
@@ -29,7 +29,7 @@ function About() {
               Over the years, I have focused on making Islamic knowledge accessible to Muslims of all backgrounds, particularly
               those living in the West. My approach combines traditional Islamic scholarship with an understanding of contemporary issues.
             </p>
-            
+
             <div className="mt-8 grid grid-cols-1 sm:grid-cols-2 gap-4">
               <div className="flex items-start">
                 <div className="flex-shrink-0 bg-green-50 rounded-full p-3 mr-4">
@@ -42,7 +42,7 @@ function About() {
                   <p className="text-gray-600">Ijazah in multiple Islamic disciplines including Quran, Hadith, and Fiqh.</p>
                 </div>
               </div>
-              
+
               <div className="flex items-start">
                 <div className="flex-shrink-0 bg-green-50 rounded-full p-3 mr-4">
                   <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6 text-teal-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -54,7 +54,7 @@ function About() {
                   <p className="text-gray-600">Regular sessions on Tafsir, Fiqh, and contemporary issues.</p>
                 </div>
               </div>
-              
+
               <div className="flex items-start">
                 <div className="flex-shrink-0 bg-green-50 rounded-full p-3 mr-4">
                   <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6 text-teal-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -66,7 +66,7 @@ function About() {
                   <p className="text-gray-600">Islamic guidance for personal and family matters.</p>
                 </div>
               </div>
-              
+
               <div className="flex items-start">
                 <div className="flex-shrink-0 bg-green-50 rounded-full p-3 mr-4">
                   <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6 text-teal-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">

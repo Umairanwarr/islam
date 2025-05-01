@@ -14,13 +14,6 @@ const BUCKET_ID = '680f87410012f15bc221';
  */
 const uploadFile = async (file) => {
     try {
-        console.log("Starting file upload to Appwrite...");
-        console.log("File details:", {
-            name: file.name,
-            type: file.type,
-            size: file.size
-        });
-
         // Create a unique file ID
         const fileId = ID.unique();
 
@@ -31,7 +24,6 @@ const uploadFile = async (file) => {
             file
         );
 
-        console.log("File uploaded successfully:", response);
         return response;
     } catch (error) {
         console.error('Upload failed:', error);
@@ -52,11 +44,9 @@ const getFileUrl = (fileId) => {
     try {
         // Use the simplest approach - direct file view URL
         // This is the most reliable method
-        console.log("Getting file URL for ID:", fileId);
 
         // Construct the URL manually with the project ID
         const url = `https://cloud.appwrite.io/v1/storage/buckets/${BUCKET_ID}/files/${fileId}/view?project=${client.config.project}`;
-        console.log("Generated direct file URL:", url);
 
         return url;
     } catch (error) {
@@ -73,7 +63,6 @@ const getFileUrl = (fileId) => {
 const deleteFile = async (fileId) => {
     try {
         await storage.deleteFile(BUCKET_ID, fileId);
-        console.log("File deleted successfully:", fileId);
     } catch (error) {
         console.error('Delete failed:', error);
         throw error;
@@ -84,7 +73,6 @@ const deleteFile = async (fileId) => {
 const listFiles = async () => {
     try {
         const response = await storage.listFiles(BUCKET_ID);
-        console.log("Files in bucket:", response);
         return response;
     } catch (error) {
         console.error('List files failed:', error);

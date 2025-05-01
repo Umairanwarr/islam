@@ -3,10 +3,18 @@ import AddSurah from './addSurah';
 import EditSurah from './editSurah';
 import AddClass from './addClass';
 import EditClass from './EditClass';
+import AddReminder from './addReminder';
+import EditReminder from './editReminder';
+import AddTestimonial from './addTestimonial';
+import EditTestimonial from './editTestimonial';
+import AddVideoLink from './addVideoLink';
+import AddPrayerPdf from './addPrayerPdf';
 import SurahCard from './SurahCard';
+import ReminderCard from './ReminderCard';
+import TestimonialCard from './TestimonialCard';
 import { db } from '../src/firebase';
-import { collection, getDocs, query, orderBy, doc, deleteDoc } from 'firebase/firestore';
-import { deleteFile } from '../src/appwrite';
+import { collection, getDocs, query, orderBy, doc, deleteDoc, getDoc } from 'firebase/firestore';
+import { deleteFile, getFileUrl } from '../src/appwrite';
 
 const Dashboard = () => {
   const [surahs, setSurahs] = useState([]);
@@ -17,11 +25,29 @@ const Dashboard = () => {
   const [classes, setClasses] = useState([]);
   const [showEditClass, setShowEditClass] = useState(false);
   const [currentClass, setCurrentClass] = useState(null);
+  const [reminders, setReminders] = useState([]);
+  const [showAddReminder, setShowAddReminder] = useState(false);
+  const [showEditReminder, setShowEditReminder] = useState(false);
+  const [currentReminder, setCurrentReminder] = useState(null);
+  const [testimonials, setTestimonials] = useState([]);
+  const [showAddTestimonial, setShowAddTestimonial] = useState(false);
+  const [showEditTestimonial, setShowEditTestimonial] = useState(false);
+  const [currentTestimonial, setCurrentTestimonial] = useState(null);
+
+  // Settings state
+  const [videoLinks, setVideoLinks] = useState({
+    todayVideo: '',
+    embeddedVideo: ''
+  });
+  const [prayerPdfId, setPrayerPdfId] = useState('');
+  const [prayerPdfUrl, setPrayerPdfUrl] = useState('');
+  const [showAddVideoLink, setShowAddVideoLink] = useState(false);
+  const [currentVideoType, setCurrentVideoType] = useState('');
+  const [showAddPrayerPdf, setShowAddPrayerPdf] = useState(false);
 
   useEffect(() => {
     const fetchSurahs = async () => {
       try {
-        console.log("Fetching surahs from Firestore...");
         // Create a query with ordering by createdAt (newest first)
         const surahsQuery = query(
           collection(db, 'surahs'),
@@ -40,7 +66,6 @@ const Dashboard = () => {
             : new Date().toISOString()
         }));
 
-        console.log("Fetched surahs:", surahList);
         setSurahs(surahList);
       } catch (error) {
         console.error("Error fetching surahs:", error);
@@ -67,9 +92,121 @@ const Dashboard = () => {
       }
     };
 
+    const fetchReminders = async () => {
+      try {
+        const remindersQuery = query(
+          collection(db, 'reminders'),
+          orderBy('createdAt', 'desc')
+        );
+        const reminderSnapshot = await getDocs(remindersQuery);
+        const reminderList = reminderSnapshot.docs.map(doc => ({
+          id: doc.id,
+          ...doc.data(),
+          createdAt: doc.data().createdAt ?
+            (doc.data().createdAt.toDate ? doc.data().createdAt.toDate().toISOString() : doc.data().createdAt)
+            : new Date().toISOString()
+        }));
+        setReminders(reminderList);
+      } catch (error) {
+        console.error('Error fetching reminders:', error);
+      }
+    };
+
+    const fetchTestimonials = async () => {
+      try {
+        const testimonialsQuery = query(
+          collection(db, 'testimonials'),
+          orderBy('createdAt', 'desc')
+        );
+        const testimonialSnapshot = await getDocs(testimonialsQuery);
+        const testimonialList = testimonialSnapshot.docs.map(doc => ({
+          id: doc.id,
+          ...doc.data(),
+          createdAt: doc.data().createdAt ?
+            (doc.data().createdAt.toDate ? doc.data().createdAt.toDate().toISOString() : doc.data().createdAt)
+            : new Date().toISOString()
+        }));
+        setTestimonials(testimonialList);
+      } catch (error) {
+        console.error('Error fetching testimonials:', error);
+      }
+    };
+
+    const fetchSettings = async () => {
+      try {
+        // Fetch video links
+        const videoLinksDoc = await getDoc(doc(db, 'settings', 'videoLinks'));
+        if (videoLinksDoc.exists()) {
+          const data = videoLinksDoc.data();
+          setVideoLinks({
+            todayVideo: data.todayVideo || '',
+            embeddedVideo: data.embeddedVideo || '',
+            todayVideoId: data.todayVideoId || '',
+            embeddedVideoId: data.embeddedVideoId || ''
+          });
+        }
+
+        // Fetch prayer PDF
+        const prayerPdfDoc = await getDoc(doc(db, 'settings', 'prayerPdf'));
+        if (prayerPdfDoc.exists()) {
+          const fileId = prayerPdfDoc.data().fileId;
+          setPrayerPdfId(fileId || '');
+
+          if (fileId) {
+            const url = getFileUrl(fileId);
+            setPrayerPdfUrl(url);
+          }
+        }
+      } catch (error) {
+        console.error('Error fetching settings:', error);
+      }
+    };
+
     fetchSurahs();
     fetchClasses();
+    fetchReminders();
+    fetchTestimonials();
+    fetchSettings();
   }, []);
+
+  // Video Link handlers
+  const handleAddTodayVideo = () => {
+    setCurrentVideoType('todayVideo');
+    setShowAddVideoLink(true);
+  };
+
+  const handleAddEmbeddedVideo = () => {
+    setCurrentVideoType('embeddedVideo');
+    setShowAddVideoLink(true);
+  };
+
+  const handleCloseVideoLink = () => {
+    setShowAddVideoLink(false);
+    setCurrentVideoType('');
+  };
+
+  const handleUpdateVideoLink = (type, newLink, youtubeId) => {
+    setVideoLinks(prev => ({
+      ...prev,
+      [type]: newLink,
+      [`${type}Id`]: youtubeId
+    }));
+  };
+
+  // Prayer PDF handlers
+  const handleAddPrayerPdf = () => {
+    setShowAddPrayerPdf(true);
+  };
+
+  const handleClosePrayerPdf = () => {
+    setShowAddPrayerPdf(false);
+  };
+
+  const handleUpdatePrayerPdf = (fileId) => {
+    setPrayerPdfId(fileId);
+    const url = getFileUrl(fileId);
+    setPrayerPdfUrl(url);
+  };
 
   const handleAddSurah = () => {
     setShowAddSurah(true);
@@ -124,17 +261,13 @@ const Dashboard = () => {
         return;
       }
 
-      console.log(`Deleting surah: ${surahToDelete.surahName} (ID: ${id})`);
-
       // Delete from Firestore
       await deleteDoc(doc(db, 'surahs', id));
-      console.log(`Deleted surah document with ID: ${id}`);
 
       // Delete image from Appwrite if it exists and is a file ID (not a URL)
       if (surahToDelete.imageUrl && !surahToDelete.imageUrl.startsWith('http')) {
         try {
           await deleteFile(surahToDelete.imageUrl);
-          console.log(`Deleted image with ID: ${surahToDelete.imageUrl}`);
         } catch (imageError) {
           console.error(`Error deleting image: ${imageError.message}`);
           // Continue even if image deletion fails
@@ -186,34 +319,171 @@ const Dashboard = () => {
     }
   };
 
+  // Reminder handlers
+  const handleAddReminder = () => {
+    setShowAddReminder(true);
+  };
+
+  const handleCloseAddReminder = () => {
+    setShowAddReminder(false);
+  };
+
+  const handleSubmitReminder = (newReminder) => {
+    setReminders(prev => [newReminder, ...prev]);
+  };
+
+  const handleEditReminder = (id) => {
+    const reminderToEdit = reminders.find(reminder => reminder.id === id);
+    if (reminderToEdit) {
+      setCurrentReminder(reminderToEdit);
+      setShowEditReminder(true);
+    }
+  };
+
+  const handleCloseEditReminder = () => {
+    setShowEditReminder(false);
+    setCurrentReminder(null);
+  };
+
+  const handleUpdateReminder = (updatedReminder) => {
+    setReminders(prev =>
+      prev.map(reminder =>
+        reminder.id === updatedReminder.id ? updatedReminder : reminder
+      )
+    );
+  };
+
+  const handleDeleteReminder = async (id) => {
+    if (!id) return;
+    const reminderToDelete = reminders.find(reminder => reminder.id === id);
+    if (!reminderToDelete) return;
+    if (!window.confirm(`Are you sure you want to delete "${reminderToDelete.title}"?`)) return;
+    try {
+      // Delete from Firestore
+      await deleteDoc(doc(db, 'reminders', id));
+
+      // Delete image from Appwrite if it exists and is a file ID (not a URL)
+      if (reminderToDelete.imageUrl && !reminderToDelete.imageUrl.startsWith('http')) {
+        try {
+          await deleteFile(reminderToDelete.imageUrl);
+        } catch (imageError) {
+          console.error(`Error deleting image: ${imageError.message}`);
+        }
+      }
+
+      // Update state
+      setReminders(prev => prev.filter(reminder => reminder.id !== id));
+      alert(`Reminder "${reminderToDelete.title}" has been deleted.`);
+    } catch (error) {
+      alert('Failed to delete reminder: ' + error.message);
+    }
+  };
+
+  // Testimonial handlers
+  const handleAddTestimonial = () => {
+    setShowAddTestimonial(true);
+  };
+
+  const handleCloseAddTestimonial = () => {
+    setShowAddTestimonial(false);
+  };
+
+  const handleSubmitTestimonial = (newTestimonial) => {
+    setTestimonials(prev => [newTestimonial, ...prev]);
+  };
+
+  const handleEditTestimonial = (id) => {
+    const testimonialToEdit = testimonials.find(testimonial => testimonial.id === id);
+    if (testimonialToEdit) {
+      setCurrentTestimonial(testimonialToEdit);
+      setShowEditTestimonial(true);
+    }
+  };
+
+  const handleCloseEditTestimonial = () => {
+    setShowEditTestimonial(false);
+    setCurrentTestimonial(null);
+  };
+
+  const handleUpdateTestimonial = (updatedTestimonial) => {
+    setTestimonials(prev =>
+      prev.map(testimonial =>
+        testimonial.id === updatedTestimonial.id ? updatedTestimonial : testimonial
+      )
+    );
+  };
+
+  const handleDeleteTestimonial = async (id) => {
+    if (!id) return;
+    const testimonialToDelete = testimonials.find(testimonial => testimonial.id === id);
+    if (!testimonialToDelete) return;
+    if (!window.confirm(`Are you sure you want to delete testimonial from "${testimonialToDelete.name}"?`)) return;
+    try {
+      // Delete from Firestore
+      await deleteDoc(doc(db, 'testimonials', id));
+
+      // Delete image from Appwrite if it exists and is a file ID (not a URL)
+      if (testimonialToDelete.image && !testimonialToDelete.image.startsWith('http')) {
+        try {
+          await deleteFile(testimonialToDelete.image);
+        } catch (imageError) {
+          console.error(`Error deleting image: ${imageError.message}`);
+        }
+      }
+
+      // Update state
+      setTestimonials(prev => prev.filter(testimonial => testimonial.id !== id));
+      alert(`Testimonial from "${testimonialToDelete.name}" has been deleted.`);
+    } catch (error) {
+      alert('Failed to delete testimonial: ' + error.message);
+    }
+  };
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100">
       {/* Header Section */}
       <div className="bg-white shadow-sm">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex justify-between items-center py-6">
+          <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 py-4 sm:py-6">
             <div>
-              <h1 className="text-3xl font-bold text-gray-900">My Dashboard</h1>
-             
+              <h1 className="text-2xl sm:text-3xl font-bold text-gray-900">My Dashboard</h1>
             </div>
-            <div className="flex space-x-4">
+            <div className="flex flex-wrap gap-2 sm:gap-4">
               <button
                 onClick={handleAddSurah}
-                className="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-lg flex items-center gap-2 transition duration-200 ease-in-out transform hover:scale-105 active:scale-95 shadow-md"
+                className="bg-green-600 hover:bg-green-700 text-white px-3 sm:px-4 py-2 rounded-lg flex items-center gap-1 sm:gap-2 text-sm sm:text-base transition duration-200 ease-in-out transform hover:scale-105 active:scale-95 shadow-md"
               >
-                <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 sm:h-5 sm:w-5" viewBox="0 0 20 20" fill="currentColor">
                   <path fillRule="evenodd" d="M10 3a1 1 0 011 1v5h5a1 1 0 110 2h-5v5a1 1 0 11-2 0v-5H4a1 1 0 110-2h5V4a1 1 0 011-1z" clipRule="evenodd" />
                 </svg>
-                Add Surah
+                <span className="hidden xs:inline">Add</span> Surah
               </button>
               <button
                 onClick={handleAddClass}
-                className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg flex items-center gap-2 transition duration-200 ease-in-out transform hover:scale-105 active:scale-95 shadow-md"
+                className="bg-blue-600 hover:bg-blue-700 text-white px-3 sm:px-4 py-2 rounded-lg flex items-center gap-1 sm:gap-2 text-sm sm:text-base transition duration-200 ease-in-out transform hover:scale-105 active:scale-95 shadow-md"
               >
-                <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 sm:h-5 sm:w-5" viewBox="0 0 20 20" fill="currentColor">
                   <path fillRule="evenodd" d="M10 3a1 1 0 011 1v5h5a1 1 0 110 2h-5v5a1 1 0 11-2 0v-5H4a1 1 0 110-2h5V4a1 1 0 011-1z" clipRule="evenodd" />
                 </svg>
-                Add Class
+                <span className="hidden xs:inline">Add</span> Class
+              </button>
+              <button
+                onClick={handleAddReminder}
+                className="bg-[#08948c] hover:bg-[#067a73] text-white px-3 sm:px-4 py-2 rounded-lg flex items-center gap-1 sm:gap-2 text-sm sm:text-base transition duration-200 ease-in-out transform hover:scale-105 active:scale-95 shadow-md"
+              >
+                <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 sm:h-5 sm:w-5" viewBox="0 0 20 20" fill="currentColor">
+                  <path fillRule="evenodd" d="M10 3a1 1 0 011 1v5h5a1 1 0 110 2h-5v5a1 1 0 11-2 0v-5H4a1 1 0 110-2h5V4a1 1 0 011-1z" clipRule="evenodd" />
+                </svg>
+                <span className="hidden xs:inline">Add</span> Reminder
+              </button>
+              <button
+                onClick={handleAddTestimonial}
+                className="bg-purple-600 hover:bg-purple-700 text-white px-3 sm:px-4 py-2 rounded-lg flex items-center gap-1 sm:gap-2 text-sm sm:text-base transition duration-200 ease-in-out transform hover:scale-105 active:scale-95 shadow-md"
+              >
+                <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 sm:h-5 sm:w-5" viewBox="0 0 20 20" fill="currentColor">
+                  <path fillRule="evenodd" d="M10 3a1 1 0 011 1v5h5a1 1 0 110 2h-5v5a1 1 0 11-2 0v-5H4a1 1 0 110-2h5V4a1 1 0 011-1z" clipRule="evenodd" />
+                </svg>
+                <span className="hidden xs:inline">Add</span> Testimonial
               </button>
             </div>
           </div>
@@ -221,45 +491,180 @@ const Dashboard = () => {
       </div>
 
       {/* Main Content */}
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8">
         {/* Stats Section */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
-          <div className="bg-white rounded-xl shadow-sm p-6 border border-gray-100">
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4 sm:gap-6 mb-6 sm:mb-8">
+          <div className="bg-white rounded-xl shadow-sm p-4 sm:p-6 border border-gray-100">
             <div className="flex items-center">
-              <div className="p-3 rounded-full bg-green-100 text-green-600">
-                <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <div className="p-2 sm:p-3 rounded-full bg-green-100 text-green-600">
+                <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 sm:h-6 sm:w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
                 </svg>
               </div>
               <div className="ml-4">
-                <h3 className="text-lg font-semibold text-gray-900">Total Surahs</h3>
-                <p className="text-2xl font-bold text-gray-900">{surahs.length}</p>
+                <h3 className="text-base sm:text-lg font-semibold text-gray-900">Total Surahs</h3>
+                <p className="text-xl sm:text-2xl font-bold text-gray-900">{surahs.length}</p>
               </div>
             </div>
           </div>
-          
-          
-          
-        </div>
 
-        {/* Surahs Grid */}
-        <div className="bg-white rounded-xl shadow-sm p-6 border border-gray-100">
-          <div className="flex justify-between items-center mb-6">
-            <h2 className="text-xl font-semibold text-gray-900">My Surahs</h2>
-            <div className="flex space-x-2">
-              <button className="px-3 py-1 text-sm text-gray-600 hover:text-gray-900 transition-colors">
-                All
-              </button>
-              <button className="px-3 py-1 text-sm text-gray-600 hover:text-gray-900 transition-colors">
-                Recent
-              </button>
-              <button className="px-3 py-1 text-sm text-gray-600 hover:text-gray-900 transition-colors">
-                Favorites
-              </button>
+          <div className="bg-white rounded-xl shadow-sm p-4 sm:p-6 border border-gray-100">
+            <div className="flex items-center">
+              <div className="p-2 sm:p-3 rounded-full bg-blue-100 text-blue-600">
+                <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 sm:h-6 sm:w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                </svg>
+              </div>
+              <div className="ml-4">
+                <h3 className="text-base sm:text-lg font-semibold text-gray-900">Total Classes</h3>
+                <p className="text-xl sm:text-2xl font-bold text-gray-900">{classes.length}</p>
+              </div>
             </div>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          <div className="bg-white rounded-xl shadow-sm p-4 sm:p-6 border border-gray-100">
+            <div className="flex items-center">
+              <div className="p-2 sm:p-3 rounded-full bg-[#08948c]/20 text-[#08948c]">
+                <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 sm:h-6 sm:w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9" />
+                </svg>
+              </div>
+              <div className="ml-4">
+                <h3 className="text-base sm:text-lg font-semibold text-gray-900">Total Reminders</h3>
+                <p className="text-xl sm:text-2xl font-bold text-gray-900">{reminders.length}</p>
+              </div>
+            </div>
+          </div>
+
+          <div className="bg-white rounded-xl shadow-sm p-4 sm:p-6 border border-gray-100">
+            <div className="flex items-center">
+              <div className="p-2 sm:p-3 rounded-full bg-purple-100 text-purple-600">
+                <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 sm:h-6 sm:w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+                </svg>
+              </div>
+              <div className="ml-4">
+                <h3 className="text-base sm:text-lg font-semibold text-gray-900">Testimonials</h3>
+                <p className="text-xl sm:text-2xl font-bold text-gray-900">{testimonials.length}</p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* Website Settings Section */}
+        <div className="bg-white rounded-xl shadow-sm p-4 sm:p-6 border border-gray-100 mb-6 sm:mb-8">
+          <h2 className="text-lg sm:text-xl font-semibold text-gray-900 mb-4">Website Settings</h2>
+
+          {/* Video Links Row */}
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+            {/* Today's Video Link */}
+            <div className="bg-gray-50 rounded-lg p-4 shadow border border-gray-100">
+              <div className="flex justify-between items-start mb-2">
+                <div>
+                  <h3 className="font-bold text-lg text-gray-800">Today's Video</h3>
+                  <p className="text-gray-600 text-sm">Update the "Watch Today's Video" button link</p>
+                </div>
+                <button
+                  onClick={handleAddTodayVideo}
+                  className="bg-[#08948c] hover:bg-[#067a73] text-white px-3 py-1.5 rounded-lg flex items-center gap-1 text-sm transition duration-200 ease-in-out transform hover:scale-105 active:scale-95 shadow-md"
+                >
+                  <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" viewBox="0 0 20 20" fill="currentColor">
+                    <path d="M13.586 3.586a2 2 0 112.828 2.828l-.793.793-2.828-2.828.793-.793zM11.379 5.793L3 14.172V17h2.828l8.38-8.379-2.83-2.828z" />
+                  </svg>
+                  Update
+                </button>
+              </div>
+              <div className="mt-2">
+                {videoLinks.todayVideo ? (
+                  <div className="flex items-center text-sm">
+                    <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 text-red-500 mr-2" fill="currentColor" viewBox="0 0 24 24">
+                      <path d="M21.582,6.186c-0.23-0.86-0.908-1.538-1.768-1.768C18.267,4,12,4,12,4S5.733,4,4.186,4.418 c-0.86,0.23-1.538,0.908-1.768,1.768C2,7.733,2,12,2,12s0,4.267,0.418,5.814c0.23,0.86,0.908,1.538,1.768,1.768 C5.733,20,12,20,12,20s6.267,0,7.814-0.418c0.861-0.23,1.538-0.908,1.768-1.768C22,16.267,22,12,22,12S22,7.733,21.582,6.186z M10,15.464V8.536L16,12L10,15.464z"/>
+                    </svg>
+                    <a href={videoLinks.todayVideo} target="_blank" rel="noopener noreferrer" className="text-blue-600 hover:underline truncate max-w-xs">
+                      {videoLinks.todayVideo}
+                    </a>
+                  </div>
+                ) : (
+                  <p className="text-gray-500 italic text-sm">No video link set</p>
+                )}
+              </div>
+            </div>
+
+            {/* Embedded Video */}
+            <div className="bg-gray-50 rounded-lg p-4 shadow border border-gray-100">
+              <div className="flex justify-between items-start mb-2">
+                <div>
+                  <h3 className="font-bold text-lg text-gray-800">Embedded Video</h3>
+                  <p className="text-gray-600 text-sm">Update the video embedded in the homepage</p>
+                </div>
+                <button
+                  onClick={handleAddEmbeddedVideo}
+                  className="bg-[#08948c] hover:bg-[#067a73] text-white px-3 py-1.5 rounded-lg flex items-center gap-1 text-sm transition duration-200 ease-in-out transform hover:scale-105 active:scale-95 shadow-md"
+                >
+                  <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" viewBox="0 0 20 20" fill="currentColor">
+                    <path d="M13.586 3.586a2 2 0 112.828 2.828l-.793.793-2.828-2.828.793-.793zM11.379 5.793L3 14.172V17h2.828l8.38-8.379-2.83-2.828z" />
+                  </svg>
+                  Update
+                </button>
+              </div>
+              <div className="mt-2">
+                {videoLinks.embeddedVideo ? (
+                  <div className="flex items-center text-sm">
+                    <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 text-red-500 mr-2" fill="currentColor" viewBox="0 0 24 24">
+                      <path d="M21.582,6.186c-0.23-0.86-0.908-1.538-1.768-1.768C18.267,4,12,4,12,4S5.733,4,4.186,4.418 c-0.86,0.23-1.538,0.908-1.768,1.768C2,7.733,2,12,2,12s0,4.267,0.418,5.814c0.23,0.86,0.908,1.538,1.768,1.768 C5.733,20,12,20,12,20s6.267,0,7.814-0.418c0.861-0.23,1.538-0.908,1.768-1.768C22,16.267,22,12,22,12S22,7.733,21.582,6.186z M10,15.464V8.536L16,12L10,15.464z"/>
+                    </svg>
+                    <a href={videoLinks.embeddedVideo} target="_blank" rel="noopener noreferrer" className="text-blue-600 hover:underline truncate max-w-xs">
+                      {videoLinks.embeddedVideo}
+                    </a>
+                  </div>
+                ) : (
+                  <p className="text-gray-500 italic text-sm">No video link set</p>
+                )}
+              </div>
+            </div>
+
+            {/* Prayer PDF Row */}
+            <div className="bg-gray-50 rounded-lg p-4 shadow border border-gray-100">
+              <div className="flex justify-between items-start mb-2">
+                <div>
+                  <h3 className="font-bold text-lg text-gray-800">Prayer Timetable</h3>
+                  <p className="text-gray-600 text-sm">Upload PDF for prayer timetable download</p>
+                </div>
+                <button
+                  onClick={handleAddPrayerPdf}
+                  className="bg-[#08948c] hover:bg-[#067a73] text-white px-3 py-1.5 rounded-lg flex items-center gap-1 text-sm transition duration-200 ease-in-out transform hover:scale-105 active:scale-95 shadow-md"
+                >
+                  <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" viewBox="0 0 20 20" fill="currentColor">
+                    <path fillRule="evenodd" d="M3 17a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zM6.293 6.707a1 1 0 010-1.414l3-3a1 1 0 011.414 0l3 3a1 1 0 01-1.414 1.414L11 5.414V13a1 1 0 11-2 0V5.414L7.707 6.707a1 1 0 01-1.414 0z" clipRule="evenodd" />
+                  </svg>
+                  Upload
+                </button>
+              </div>
+              <div className="mt-2">
+                {prayerPdfUrl ? (
+                  <div className="flex items-center text-sm">
+                    <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 text-red-500 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 21h10a2 2 0 002-2V9.414a1 1 0 00-.293-.707l-5.414-5.414A1 1 0 0012.586 3H7a2 2 0 00-2 2v14a2 2 0 002 2z" />
+                    </svg>
+                    <a href={prayerPdfUrl} target="_blank" rel="noopener noreferrer" className="text-blue-600 hover:underline">
+                      Prayer Timetable PDF
+                    </a>
+                  </div>
+                ) : (
+                  <p className="text-gray-500 italic text-sm">No PDF uploaded</p>
+                )}
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* Surahs Grid */}
+        <div className="bg-white rounded-xl shadow-sm p-4 sm:p-6 border border-gray-100">
+          <div className="flex justify-between items-center mb-4 sm:mb-6">
+            <h2 className="text-lg sm:text-xl font-semibold text-gray-900">My Surahs</h2>
+          </div>
+
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
             {surahs.length === 0 ? (
               <div className="col-span-full text-center py-12">
                 <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-gray-100 mb-4">
@@ -281,7 +686,6 @@ const Dashboard = () => {
               </div>
             ) : (
               surahs.map((surah, index) => {
-                console.log(`Rendering surah card for ${surah.surahName}:`, surah);
                 return (
                   <SurahCard
                     key={surah.id || index}
@@ -299,12 +703,56 @@ const Dashboard = () => {
           </div>
         </div>
 
-        {/* Classes Section */}
-        <div className="bg-white rounded-xl shadow-sm p-6 border border-gray-100 mt-8">
-          <div className="flex justify-between items-center mb-6">
-            <h2 className="text-xl font-semibold text-gray-900">My Classes</h2>
+        {/* Reminders Section */}
+        <div className="bg-white rounded-xl shadow-sm p-4 sm:p-6 border border-gray-100 mt-6 sm:mt-8">
+          <div className="flex justify-between items-center mb-4 sm:mb-6">
+            <h2 className="text-lg sm:text-xl font-semibold text-gray-900">My Reminders</h2>
           </div>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
+            {reminders.length === 0 ? (
+              <div className="col-span-full text-center py-12">
+                <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-gray-100 mb-4">
+                  <svg xmlns="http://www.w3.org/2000/svg" className="h-8 w-8 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9" />
+                  </svg>
+                </div>
+                <h3 className="text-lg font-medium text-gray-900 mb-1">No Reminders Yet</h3>
+                <p className="text-gray-500 mb-4">Start by adding your first reminder</p>
+                <button
+                  onClick={handleAddReminder}
+                  className="bg-[#08948c] hover:bg-[#067a73] text-white px-4 py-2 rounded-lg flex items-center gap-2 transition duration-200 ease-in-out transform hover:scale-105 active:scale-95 shadow-md mx-auto"
+                >
+                  <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                    <path fillRule="evenodd" d="M10 3a1 1 0 011 1v5h5a1 1 0 110 2h-5v5a1 1 0 11-2 0v-5H4a1 1 0 110-2h5V4a1 1 0 011-1z" clipRule="evenodd" />
+                  </svg>
+                  Add Your First Reminder
+                </button>
+              </div>
+            ) : (
+              reminders.map((reminder, idx) => (
+                <ReminderCard
+                  key={reminder.id || idx}
+                  id={reminder.id}
+                  title={reminder.title}
+                  description={reminder.description}
+                  imageUrl={reminder.imageUrl}
+                  date={reminder.date}
+                  category={reminder.category}
+                  onDelete={handleDeleteReminder}
+                  onEdit={handleEditReminder}
+                  inDashboard={true}
+                />
+              ))
+            )}
+          </div>
+        </div>
+
+        {/* Classes Section */}
+        <div className="bg-white rounded-xl shadow-sm p-4 sm:p-6 border border-gray-100 mt-6 sm:mt-8">
+          <div className="flex justify-between items-center mb-4 sm:mb-6">
+            <h2 className="text-lg sm:text-xl font-semibold text-gray-900">My Classes</h2>
+          </div>
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
             {classes.length === 0 ? (
               <div className="col-span-full text-center py-12">
                 <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-gray-100 mb-4">
@@ -347,6 +795,49 @@ const Dashboard = () => {
             )}
           </div>
         </div>
+
+        {/* Testimonials Section */}
+        <div className="bg-white rounded-xl shadow-sm p-4 sm:p-6 border border-gray-100 mt-6 sm:mt-8">
+          <div className="flex justify-between items-center mb-4 sm:mb-6">
+            <h2 className="text-lg sm:text-xl font-semibold text-gray-900">My Testimonials</h2>
+          </div>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6">
+            {testimonials.length === 0 ? (
+              <div className="col-span-full text-center py-12">
+                <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-gray-100 mb-4">
+                  <svg xmlns="http://www.w3.org/2000/svg" className="h-8 w-8 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+                  </svg>
+                </div>
+                <h3 className="text-lg font-medium text-gray-900 mb-1">No Testimonials Yet</h3>
+                <p className="text-gray-500 mb-4">Start by adding your first testimonial</p>
+                <button
+                  onClick={handleAddTestimonial}
+                  className="bg-purple-600 hover:bg-purple-700 text-white px-4 py-2 rounded-lg flex items-center gap-2 transition duration-200 ease-in-out transform hover:scale-105 active:scale-95 shadow-md mx-auto"
+                >
+                  <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                    <path fillRule="evenodd" d="M10 3a1 1 0 011 1v5h5a1 1 0 110 2h-5v5a1 1 0 11-2 0v-5H4a1 1 0 110-2h5V4a1 1 0 011-1z" clipRule="evenodd" />
+                  </svg>
+                  Add Your First Testimonial
+                </button>
+              </div>
+            ) : (
+              testimonials.map((testimonial, idx) => (
+                <TestimonialCard
+                  key={testimonial.id || idx}
+                  id={testimonial.id}
+                  name={testimonial.name}
+                  location={testimonial.location}
+                  quote={testimonial.quote}
+                  image={testimonial.image}
+                  onDelete={handleDeleteTestimonial}
+                  onEdit={handleEditTestimonial}
+                  inDashboard={true}
+                />
+              ))
+            )}
+          </div>
+        </div>
       </div>
 
       {showAddSurah && (
@@ -378,6 +869,53 @@ const Dashboard = () => {
           onUpdate={(updatedClass) => {
             setClasses(prev => prev.map(cls => cls.id === updatedClass.id ? updatedClass : cls));
           }}
+        />
+      )}
+
+      {showAddReminder && (
+        <AddReminder
+          onClose={handleCloseAddReminder}
+          onAddReminder={handleSubmitReminder}
+        />
+      )}
+
+      {showEditReminder && currentReminder && (
+        <EditReminder
+          reminder={currentReminder}
+          onClose={handleCloseEditReminder}
+          onUpdate={handleUpdateReminder}
+        />
+      )}
+
+      {showAddTestimonial && (
+        <AddTestimonial
+          onClose={handleCloseAddTestimonial}
+          onAddTestimonial={handleSubmitTestimonial}
+        />
+      )}
+
+      {showEditTestimonial && currentTestimonial && (
+        <EditTestimonial
+          testimonial={currentTestimonial}
+          onClose={handleCloseEditTestimonial}
+          onUpdate={handleUpdateTestimonial}
+        />
+      )}
+
+      {showAddVideoLink && (
+        <AddVideoLink
+          onClose={handleCloseVideoLink}
+          onUpdate={handleUpdateVideoLink}
+          currentLinks={videoLinks}
+          type={currentVideoType}
+        />
+      )}
+
+      {showAddPrayerPdf && (
+        <AddPrayerPdf
+          onClose={handleClosePrayerPdf}
+          onUpdate={handleUpdatePrayerPdf}
+          currentPdfId={prayerPdfId}
         />
       )}
     </div>

@@ -6,7 +6,7 @@ function PrayerTime() {
   const [is24Hour, setIs24Hour] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
   const [date, setDate] = useState('');
-  
+
   const ukCities = [
     { name: 'London', latitude: 51.5074, longitude: -0.1278 },
     { name: 'Birmingham', latitude: 52.4862, longitude: -1.8904 },
@@ -32,20 +32,20 @@ function PrayerTime() {
   const fetchPrayerTimes = async () => {
     setIsLoading(true);
     const selectedCityData = ukCities.find(city => city.name === selectedCity);
-    
+
     try {
       const today = new Date();
-      const formattedDate = today.toLocaleDateString('en-GB', { 
+      const formattedDate = today.toLocaleDateString('en-GB', {
         weekday: 'long',
         year: 'numeric',
         month: 'long',
         day: 'numeric'
       });
       setDate(formattedDate);
-      
+
       const response = await fetch(`https://api.aladhan.com/v1/timings/${today.getDate()}-${today.getMonth() + 1}-${today.getFullYear()}?latitude=${selectedCityData.latitude}&longitude=${selectedCityData.longitude}&method=2`);
       const data = await response.json();
-      
+
       setPrayerTimes(data.data.timings);
       setIsLoading(false);
     } catch (error) {
@@ -56,9 +56,9 @@ function PrayerTime() {
 
   const formatTime = (timeString) => {
     if (!timeString) return '';
-    
+
     const [hours, minutes] = timeString.split(':');
-    
+
     if (is24Hour) {
       return `${hours}:${minutes}`;
     } else {
@@ -78,19 +78,19 @@ function PrayerTime() {
   };
 
   return (
-    <div className="py-10 px-4 sm:px-6 lg:px-8 bg-gray-50 prayer-time-container">
+    <div id="prayer-time" className="py-10 px-4 sm:px-6 lg:px-8 bg-gray-50 prayer-time-container">
       <div className="max-w-6xl mx-auto">
         <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-6">
           <div>
             <h2 className="text-3xl font-bold text-gray-800">Today's Prayer Times</h2>
             <p className="text-gray-600 mt-1">{date} | {selectedCity}, UK</p>
           </div>
-          
+
           <div className="mt-4 md:mt-0 flex items-center space-x-8">
             <div className="flex flex-col items-start space-y-1">
               <span className="text-sm text-teal-600 font-medium">Choose a city from below:</span>
-              <select 
-                value={selectedCity} 
+              <select
+                value={selectedCity}
                 onChange={handleCityChange}
                 className="border border-gray-300 rounded-md py-2 px-4 focus:outline-none focus:ring-2 focus:ring-teal-500 focus:border-teal-500"
               >
@@ -99,14 +99,14 @@ function PrayerTime() {
                 ))}
               </select>
             </div>
-            
+
             <div className="flex items-center space-x-2">
               <span className={`text-sm ${!is24Hour ? 'font-bold text-gray-800' : 'text-gray-500'}`}>12-Hour</span>
-              <button 
+              <button
                 onClick={toggleTimeFormat}
                 className="relative inline-flex items-center h-6 rounded-full w-11 transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-teal-500 bg-teal-600"
               >
-                <span 
+                <span
                   className={`${is24Hour ? 'translate-x-6' : 'translate-x-1'} inline-block w-4 h-4 transform bg-white rounded-full transition-transform duration-200 ease-in-out`}
                 />
               </button>
@@ -114,7 +114,7 @@ function PrayerTime() {
             </div>
           </div>
         </div>
-        
+
         {isLoading ? (
           <div className="flex justify-center items-center h-40">
             <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-teal-500"></div>
@@ -128,7 +128,7 @@ function PrayerTime() {
                 <p className="text-sm text-gray-500 mt-1">Begins</p>
               </div>
             </div>
-            
+
             <div className="bg-white rounded-lg shadow-md overflow-hidden border-t-4 border-yellow-500 prayer-time-item">
               <div className="p-4 text-center">
                 <h3 className="font-medium text-gray-700">Sunrise</h3>
@@ -136,7 +136,7 @@ function PrayerTime() {
                 <p className="text-sm text-gray-500 mt-1">Begins</p>
               </div>
             </div>
-            
+
             <div className="bg-white rounded-lg shadow-md overflow-hidden border-t-4 border-blue-500 prayer-time-item">
               <div className="p-4 text-center">
                 <h3 className="font-medium text-gray-700">Dhuhr</h3>
@@ -144,7 +144,7 @@ function PrayerTime() {
                 <p className="text-sm text-gray-500 mt-1">Begins</p>
               </div>
             </div>
-            
+
             <div className="bg-white rounded-lg shadow-md overflow-hidden border-t-4 border-orange-500 prayer-time-item">
               <div className="p-4 text-center">
                 <h3 className="font-medium text-gray-700">Asr</h3>
@@ -152,7 +152,7 @@ function PrayerTime() {
                 <p className="text-sm text-gray-500 mt-1">Begins</p>
               </div>
             </div>
-            
+
             <div className="bg-white rounded-lg shadow-md overflow-hidden border-t-4 border-red-500 prayer-time-item">
               <div className="p-4 text-center">
                 <h3 className="font-medium text-gray-700">Maghrib</h3>
@@ -160,7 +160,7 @@ function PrayerTime() {
                 <p className="text-sm text-gray-500 mt-1">Begins</p>
               </div>
             </div>
-            
+
             <div className="bg-white rounded-lg shadow-md overflow-hidden border-t-4 border-indigo-500 prayer-time-item">
               <div className="p-4 text-center">
                 <h3 className="font-medium text-gray-700">Isha</h3>

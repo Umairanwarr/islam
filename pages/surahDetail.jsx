@@ -6,9 +6,9 @@ import { getSurahVerses, getSurahTranslation, getAvailableTranslations, getSurah
 
 // Helper function to convert YouTube URL to embed URL
 const getYouTubeEmbedUrl = (url) => {
-  console.log('Processing YouTube URL:', url);
+  
   if (!url || typeof url !== 'string') {
-    console.log('No valid URL provided');
+    
     return '';
   }
 
@@ -22,7 +22,7 @@ const getYouTubeEmbedUrl = (url) => {
         const urlParams = new URLSearchParams(new URL(url).search);
         videoId = urlParams.get('v');
       } catch (error) {
-        console.error('Error parsing YouTube watch URL:', error);
+        
       }
     }
     // YouTube Shorts URL: https://youtube.com/shorts/VIDEO_ID or https://www.youtube.com/shorts/VIDEO_ID
@@ -31,7 +31,7 @@ const getYouTubeEmbedUrl = (url) => {
         const shortsPath = url.split('youtube.com/shorts/')[1];
         videoId = shortsPath.split('/')[0].split('?')[0];
       } catch (error) {
-        console.error('Error parsing YouTube shorts URL:', error);
+     
       }
     }
     // Short YouTube URL: https://youtu.be/VIDEO_ID
@@ -39,7 +39,7 @@ const getYouTubeEmbedUrl = (url) => {
       try {
         videoId = url.split('youtu.be/')[1].split('?')[0];
       } catch (error) {
-        console.error('Error parsing youtu.be URL:', error);
+      
       }
     }
     // YouTube Embed URL: https://www.youtube.com/embed/VIDEO_ID
@@ -47,16 +47,16 @@ const getYouTubeEmbedUrl = (url) => {
       try {
         videoId = url.split('youtube.com/embed/')[1].split('?')[0];
       } catch (error) {
-        console.error('Error parsing YouTube embed URL:', error);
+       
       }
     }
 
     // Return embed URL if video ID was found
     const embedUrl = videoId ? `https://www.youtube.com/embed/${videoId}` : '';
-    console.log('Generated embed URL:', embedUrl);
+    
     return embedUrl;
   } catch (error) {
-    console.error('Error in getYouTubeEmbedUrl:', error);
+    
     return '';
   }
 };
@@ -81,8 +81,7 @@ const SurahDetail = () => {
 
         if (surahDoc.exists()) {
           const surahData = surahDoc.data();
-          console.log('Surah data retrieved:', surahData);
-          console.log('YouTube URL:', surahData.youtubeUrl);
+        
 
           // Add ID to the surah data
           setSurah({
@@ -93,7 +92,7 @@ const SurahDetail = () => {
           setError('Surah not found');
         }
       } catch (err) {
-        console.error('Error fetching surah:', err);
+      
         setError('Failed to load surah data');
       } finally {
         setLoading(false);
@@ -131,7 +130,7 @@ const SurahDetail = () => {
 
         setError(null);
       } catch (err) {
-        console.error('Error fetching Quran data:', err);
+     
         setError('Failed to load Quran data');
       } finally {
         setLoading(false);
@@ -240,8 +239,7 @@ const SurahDetail = () => {
       </div>
 
       {/* YouTube Video (if available) */}
-      {console.log('Checking YouTube URL in render:', surah?.youtubeUrl)}
-      {console.log('Full surah object:', surah)}
+      
 
       {/* YouTube Video */}
       {surah && surah.youtubeUrl && surah.youtubeUrl.trim() !== '' && (
@@ -253,7 +251,7 @@ const SurahDetail = () => {
               <div className="relative w-full pb-[56.25%]">
                 {(() => {
                   const embedUrl = getYouTubeEmbedUrl(surah.youtubeUrl);
-                  console.log('Final embed URL used:', embedUrl);
+                
                   return embedUrl ? (
                     <iframe
                       src={embedUrl}

@@ -21,7 +21,7 @@ function Contact() {
   // Initialize EmailJS when component mounts
   useEffect(() => {
     emailjs.init(PUBLIC_KEY);
-    console.log('EmailJS initialized with public key:', PUBLIC_KEY);
+
   }, []);
 
   const handleChange = (e) => {
@@ -75,7 +75,7 @@ function Contact() {
   };
 
   return (
-    <div className="py-16 px-4 sm:px-6 lg:px-8 bg-white contact-container">
+    <div id="contact" className="py-16 px-4 sm:px-6 lg:px-8 bg-white contact-container">
       <div className="max-w-7xl mx-auto">
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-12">
           {/* Get in Touch Section */}
