@@ -1,13 +1,14 @@
 import React, { useState, useEffect } from 'react';
 import { db } from '../src/firebase';
 import { doc, getDoc } from 'firebase/firestore';
-import { getFileUrl } from '../src/appwrite';
+import { secureDownloadFile } from '../src/utils/secureDownload';
 
 function Hero() {
   const [videoPlaying, setVideoPlaying] = useState(false);
   const [todayVideoLink, setTodayVideoLink] = useState('');
   const [embeddedVideoId, setEmbeddedVideoId] = useState('ztT8RUczkW0'); // Default video ID
-  const [prayerPdfUrl, setPrayerPdfUrl] = useState('');
+  const [prayerPdfId, setPrayerPdfId] = useState('');
+  const [prayerPdfName, setPrayerPdfName] = useState('Prayer_Timetable.pdf');
 
   useEffect(() => {
     const fetchSettings = async () => {
@@ -32,8 +33,12 @@ function Hero() {
         const prayerPdfDoc = await getDoc(doc(db, 'settings', 'prayerPdf'));
         if (prayerPdfDoc.exists() && prayerPdfDoc.data().fileId) {
           const fileId = prayerPdfDoc.data().fileId;
-          const url = getFileUrl(fileId);
-          setPrayerPdfUrl(url);
+          setPrayerPdfId(fileId);
+
+          // Set custom filename if available
+          if (prayerPdfDoc.data().fileName) {
+            setPrayerPdfName(prayerPdfDoc.data().fileName);
+          }
         }
       } catch (error) {
         console.error('Error fetching settings:', error);
@@ -49,6 +54,22 @@ function Hero() {
     const iframe = document.querySelector('.youtube-iframe');
     if (iframe) {
       iframe.contentWindow.postMessage('{"event":"command","func":"playVideo","args":""}', '*');
+    }
+  };
+
+  const handleDownloadPdf = async (e) => {
+    e.preventDefault();
+
+    if (!prayerPdfId) {
+      alert('Prayer timetable PDF not available');
+      return;
+    }
+
+    try {
+      await secureDownloadFile(prayerPdfId, prayerPdfName);
+    } catch (error) {
+      console.error('Error downloading PDF:', error);
+      alert('Failed to download PDF. Please try again.');
     }
   };
 
@@ -98,25 +119,16 @@ function Hero() {
               </svg>
               Watch Today's Video
             </a>
-            <a
-              href={prayerPdfUrl}
-              target="_blank"
-              rel="noopener noreferrer"
-              download="Prayer_Timetable.pdf"
+            <button
+              onClick={handleDownloadPdf}
               className="flex items-center justify-center px-4 sm:px-6 py-2 sm:py-3 border border-teal-600 text-teal-600 rounded-md shadow hover:bg-teal-50 transition duration-300 text-sm sm:text-base"
               style={{ opacity: 1, visibility: 'visible' }}
-              onClick={(e) => {
-                if (!prayerPdfUrl) {
-                  e.preventDefault();
-                  alert('Prayer timetable PDF not available');
-                }
-              }}
             >
               <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 sm:h-5 sm:w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
                 <path strokeLinecap="round" strokeLinejoin="round" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
               </svg>
               Download Prayer Timetable
-            </a>
+            </button>
             <a href="https://www.youtube.com/@AbuSaad17" target="_blank" rel="noopener noreferrer" className="flex items-center justify-center px-4 sm:px-6 py-2 sm:py-3 bg-red-600 text-white rounded-md shadow hover:bg-red-700 transition duration-300 text-sm sm:text-base" style={{ opacity: 1, visibility: 'visible' }}>
               <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 sm:h-5 sm:w-5 mr-2" fill="currentColor" viewBox="0 0 24 24">
                  <path d="M21.582,6.186c-0.23-0.86-0.908-1.538-1.768-1.768C18.267,4,12,4,12,4S5.733,4,4.186,4.418 c-0.86,0.23-1.538,0.908-1.768,1.768C2,7.733,2,12,2,12s0,4.267,0.418,5.814c0.23,0.86,0.908,1.538,1.768,1.768 C5.733,20,12,20,12,20s6.267,0,7.814-0.418c0.861-0.23,1.538-0.908,1.768-1.768C22,16.267,22,12,22,12S22,7.733,21.582,6.186z M10,15.464V8.536L16,12L10,15.464z"/>
