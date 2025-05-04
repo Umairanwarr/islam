@@ -10,7 +10,7 @@ function About() {
             <div className="absolute inset-0 bg-gradient-to-br from-teal-500/20 to-green-500/20 rounded-lg"></div>
             <div className="relative p-2">
               <img
-                src="/about-me.png"
+                src="/about-me.jpg"
                 alt="Imam Abu Saad"
                 className="rounded-lg shadow-lg w-full border-4 border-white"
               />
