@@ -8,6 +8,29 @@ body {
   overflow-x: hidden;
 }
 
+/* Ensure all elements are visible by default */
+.resources-card,
+.prayer-time-item,
+.testimonial-item,
+.hero-content,
+.hero-content h1,
+.hero-content p,
+.hero-content a,
+.about-image,
+.about-content,
+.quran-container,
+.donation-container,
+.subscribe-title,
+.subscribe-text,
+.subscribe-form,
+.contact-info,
+.contact-form,
+.footer-content {
+  opacity: 1 !important;
+  visibility: visible !important;
+  transform: none !important;
+}
+
 .preloader-wrapper {
   position: fixed;
   top: 0;

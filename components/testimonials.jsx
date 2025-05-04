@@ -64,24 +64,27 @@ function Testimonials() {
     fetchTestimonials();
   }, []);
 
-  // Set up component-specific animation
+  // Set up component-specific animation with visibility by default
   useEffect(() => {
-   
-
-    // Make sure all items start invisible
+    // Make sure all items are visible by default
     if (itemsRef.current.length > 0) {
-      gsap.set(itemsRef.current, { opacity: 0, y: 50 });
+      // Set initial state to visible
+      gsap.set(itemsRef.current, {
+        opacity: 1,
+        y: 0,
+        visibility: 'visible'
+      });
 
-      // Create animation for testimonial items
+      // Optional subtle enhancement when scrolling into view
       gsap.to(itemsRef.current, {
         opacity: 1,
         y: 0,
-        duration: 0.8,
-        stagger: 0.3,
-        ease: "power2.out",
+        duration: 0.5,
+        stagger: 0.1,
+        ease: "power1.out",
         scrollTrigger: {
           trigger: sectionRef.current,
-          start: "top 75%",
+          start: "top 85%",
           toggleActions: "play none none none",
         }
       });

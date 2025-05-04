@@ -120,7 +120,7 @@ function LandingPage() {
         </div>
       )}
 
-      <div className={`transition-opacity duration-500 ease-in-out ${loading ? 'opacity-0' : 'opacity-100'}`}>
+      <div className={`transition-opacity duration-500 ease-in-out ${loading ? 'opacity-0' : 'opacity-100'}`} style={{ visibility: loading ? 'hidden' : 'visible' }}>
         <Hero />
         <Reminder />
         <PrayerTime />

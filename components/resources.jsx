@@ -1,6 +1,17 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 
 function Resources() {
+  // Ensure all resource cards are visible by default
+  useEffect(() => {
+    // Set all resource cards to be visible by default
+    const resourceCards = document.querySelectorAll('.resources-card');
+    resourceCards.forEach(card => {
+      card.style.opacity = '1';
+      card.style.transform = 'translateY(0)';
+      card.style.visibility = 'visible';
+    });
+  }, []);
+
   return (
     <div className="py-16 px-4 sm:px-6 lg:px-8 bg-white">
       <div className="max-w-7xl mx-auto resources-container">
@@ -16,7 +27,7 @@ function Resources() {
         {/* Resources Grid */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
           {/* E-Books */}
-          <div className="bg-white rounded-lg shadow-md overflow-hidden resources-card h-full">
+          <div className="bg-white rounded-lg shadow-md overflow-hidden resources-card h-full" style={{ opacity: 1, visibility: 'visible' }}>
             <div className="h-2 bg-teal-600"></div>
             <div className="p-6 flex flex-col h-full">
               <div className="w-12 h-12 bg-teal-50 rounded-lg flex items-center justify-center mb-4">
@@ -41,7 +52,7 @@ function Resources() {
           </div>
 
           {/* PDF Resources */}
-          <div className="bg-white rounded-lg shadow-md overflow-hidden resources-card h-full">
+          <div className="bg-white rounded-lg shadow-md overflow-hidden resources-card h-full" style={{ opacity: 1, visibility: 'visible' }}>
             <div className="h-2 bg-yellow-500"></div>
             <div className="p-6 flex flex-col h-full">
               <div className="w-12 h-12 bg-yellow-50 rounded-lg flex items-center justify-center mb-4">
@@ -66,7 +77,7 @@ function Resources() {
           </div>
 
           {/* Live Classes */}
-          <div className="bg-white rounded-lg shadow-md overflow-hidden resources-card h-full">
+          <div className="bg-white rounded-lg shadow-md overflow-hidden resources-card h-full" style={{ opacity: 1, visibility: 'visible' }}>
             <div className="h-2 bg-blue-500"></div>
             <div className="p-6 flex flex-col h-full">
               <div className="w-12 h-12 bg-blue-50 rounded-lg flex items-center justify-center mb-4">
@@ -90,7 +101,7 @@ function Resources() {
           </div>
 
           {/* Blog */}
-          <div className="bg-white rounded-lg shadow-md overflow-hidden resources-card h-full">
+          <div className="bg-white rounded-lg shadow-md overflow-hidden resources-card h-full" style={{ opacity: 1, visibility: 'visible' }}>
             <div className="h-2 bg-purple-600"></div>
             <div className="p-6 flex flex-col h-full">
               <div className="w-12 h-12 bg-purple-50 rounded-lg flex items-center justify-center mb-4">
