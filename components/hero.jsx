@@ -132,7 +132,7 @@ function Hero() {
   };
 
   return (
-    <div className="relative min-h-screen flex items-center bg-white overflow-hidden">
+    <div className="relative min-h-[110vh] sm:min-h-screen flex items-center bg-white overflow-hidden">
       {/* Background Image Section */}
       <div className="absolute inset-0 w-full h-full">
         <img
@@ -146,7 +146,7 @@ function Hero() {
 
       {/* Content Section */}
       <div className="relative z-10 container mx-auto px-4 sm:px-6 lg:px-8 flex flex-col lg:flex-row items-center">
-        <div className="w-full lg:w-1/2 text-gray-800 py-6 lg:py-24 hero-content">
+        <div className="w-full lg:w-1/2 text-gray-800 pt-16 pb-6 sm:pt-12 lg:py-24 hero-content">
 
           <p className="text-xl sm:text-3xl text-teal-600 font-bold mb-2 text-center">Assalamu Alaikum wa Rahmatullah</p>
           <h1 className="text-3xl sm:text-5xl md:text-6xl font-bold mb-2 sm:mb-4 leading-tight">Welcome to official website</h1>
