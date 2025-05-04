@@ -15,18 +15,58 @@ const AddVideoLink = ({ onClose, onUpdate, currentLinks, type }) => {
 
   const validateYouTubeUrl = (url) => {
     if (!url) return false;
-
-    const regExp = /^(?:https?:\/\/)?(?:www\.)?(?:youtube\.com\/(?:embed\/|watch\?v=)|youtu\.be\/)([a-zA-Z0-9_-]{11})(?:\S+)?$/;
-    return regExp.test(url);
+    return !!extractYouTubeId(url);
   };
 
   const extractYouTubeId = (url) => {
-    if (!url) return '';
+    if (!url || typeof url !== 'string') {
+      return '';
+    }
 
-    const regExp = /^(?:https?:\/\/)?(?:www\.)?(?:youtube\.com\/(?:embed\/|watch\?v=)|youtu\.be\/)([a-zA-Z0-9_-]{11})(?:\S+)?$/;
-    const match = url.match(regExp);
+    try {
+      // Handle different YouTube URL formats
+      let videoId = '';
 
-    return match && match[1] ? match[1] : '';
+      // Standard YouTube URL: https://www.youtube.com/watch?v=VIDEO_ID
+      if (url.includes('youtube.com/watch')) {
+        try {
+          const urlParams = new URLSearchParams(new URL(url).search);
+          videoId = urlParams.get('v');
+        } catch (error) {
+          console.error('Error parsing standard YouTube URL:', error);
+        }
+      }
+      // YouTube Shorts URL: https://youtube.com/shorts/VIDEO_ID or https://www.youtube.com/shorts/VIDEO_ID
+      else if (url.includes('youtube.com/shorts/')) {
+        try {
+          const shortsPath = url.split('youtube.com/shorts/')[1];
+          videoId = shortsPath.split('/')[0].split('?')[0];
+        } catch (error) {
+          console.error('Error parsing YouTube shorts URL:', error);
+        }
+      }
+      // Short YouTube URL: https://youtu.be/VIDEO_ID
+      else if (url.includes('youtu.be/')) {
+        try {
+          videoId = url.split('youtu.be/')[1].split('?')[0];
+        } catch (error) {
+          console.error('Error parsing youtu.be URL:', error);
+        }
+      }
+      // YouTube Embed URL: https://www.youtube.com/embed/VIDEO_ID
+      else if (url.includes('youtube.com/embed/')) {
+        try {
+          videoId = url.split('youtube.com/embed/')[1].split('?')[0];
+        } catch (error) {
+          console.error('Error parsing YouTube embed URL:', error);
+        }
+      }
+
+      return videoId;
+    } catch (error) {
+      console.error('Error processing YouTube URL:', error);
+      return '';
+    }
   };
 
   const handleSubmit = async (e) => {
@@ -91,7 +131,7 @@ const AddVideoLink = ({ onClose, onUpdate, currentLinks, type }) => {
               required
             />
             <p className="text-xs text-gray-500 mt-1">
-              Enter a YouTube video URL (e.g., https://www.youtube.com/watch?v=abcdefghijk)
+              Enter any YouTube video URL (standard, shorts, or youtu.be links are supported)
             </p>
           </div>
 

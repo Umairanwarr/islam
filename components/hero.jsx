@@ -10,6 +10,58 @@ function Hero() {
   const [prayerPdfId, setPrayerPdfId] = useState('');
   const [prayerPdfName, setPrayerPdfName] = useState('Prayer_Timetable.pdf');
 
+  // Helper function to handle all types of YouTube links
+  const getYouTubeEmbedUrl = (url) => {
+    if (!url || typeof url !== 'string') {
+      return '';
+    }
+
+    try {
+      // Handle different YouTube URL formats
+      let videoId = '';
+
+      // Standard YouTube URL: https://www.youtube.com/watch?v=VIDEO_ID
+      if (url.includes('youtube.com/watch')) {
+        try {
+          const urlParams = new URLSearchParams(new URL(url).search);
+          videoId = urlParams.get('v');
+        } catch (error) {
+          console.error('Error parsing standard YouTube URL:', error);
+        }
+      }
+      // YouTube Shorts URL: https://youtube.com/shorts/VIDEO_ID or https://www.youtube.com/shorts/VIDEO_ID
+      else if (url.includes('youtube.com/shorts/')) {
+        try {
+          const shortsPath = url.split('youtube.com/shorts/')[1];
+          videoId = shortsPath.split('/')[0].split('?')[0];
+        } catch (error) {
+          console.error('Error parsing YouTube shorts URL:', error);
+        }
+      }
+      // Short YouTube URL: https://youtu.be/VIDEO_ID
+      else if (url.includes('youtu.be/')) {
+        try {
+          videoId = url.split('youtu.be/')[1].split('?')[0];
+        } catch (error) {
+          console.error('Error parsing youtu.be URL:', error);
+        }
+      }
+      // YouTube Embed URL: https://www.youtube.com/embed/VIDEO_ID
+      else if (url.includes('youtube.com/embed/')) {
+        try {
+          videoId = url.split('youtube.com/embed/')[1].split('?')[0];
+        } catch (error) {
+          console.error('Error parsing YouTube embed URL:', error);
+        }
+      }
+
+      return videoId;
+    } catch (error) {
+      console.error('Error processing YouTube URL:', error);
+      return '';
+    }
+  };
+
   useEffect(() => {
     const fetchSettings = async () => {
       try {
@@ -26,6 +78,12 @@ function Hero() {
           // Embedded video ID
           if (data.embeddedVideoId) {
             setEmbeddedVideoId(data.embeddedVideoId);
+          } else if (data.embeddedVideo) {
+            // Extract video ID from URL if only URL is provided
+            const extractedId = getYouTubeEmbedUrl(data.embeddedVideo);
+            if (extractedId) {
+              setEmbeddedVideoId(extractedId);
+            }
           }
         }
 
@@ -89,16 +147,7 @@ function Hero() {
       {/* Content Section */}
       <div className="relative z-10 container mx-auto px-4 sm:px-6 lg:px-8 flex flex-col lg:flex-row items-center">
         <div className="w-full lg:w-1/2 text-gray-800 py-6 lg:py-24 hero-content">
-          <div className="w-full flex justify-center mb-4">
-            <div className="inline-block px-3 sm:px-6 py-1 sm:py-2 rounded-full bg-white/90 backdrop-blur-sm shadow-lg border border-teal-100 max-w-[95%] sm:max-w-none text-center">
-              <p className="text-xs sm:text-base md:text-lg text-[#08948c] font-semibold mb-0.5 sm:mb-1 tracking-wide text-center">
-                Hall Green Community Centre
-              </p>
-              <p className="text-xs sm:text-base md:text-lg text-[#08948c] font-semibold tracking-wide text-center">
-                UK Registered Charity No. 1144170
-              </p>
-            </div>
-          </div>
+
           <p className="text-xl sm:text-3xl text-teal-600 font-bold mb-2 text-center">Assalamu Alaikum wa Rahmatullah</p>
           <h1 className="text-3xl sm:text-5xl md:text-6xl font-bold mb-2 sm:mb-4 leading-tight">Welcome to official website</h1>
           <p className="text-sm sm:text-lg text-gray-600 mb-3 sm:mb-6">
@@ -162,7 +211,7 @@ function Hero() {
                 className="youtube-iframe absolute top-0 left-0 w-full h-full"
                 src={`https://www.youtube.com/embed/${embeddedVideoId}?enablejsapi=1`}
                 title="YouTube video player"
-                frameBorder="0"
+                style={{ border: 0 }}
                 allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
                 allowFullScreen>
               </iframe>
