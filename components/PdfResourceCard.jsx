@@ -1,24 +1,16 @@
 import React from 'react';
 import { getFileUrl } from '../src/appwrite';
-import { secureOpenPdfInNewTab } from '../src/utils/secureDownload';
+import { secureDownloadFile } from '../src/utils/secureDownload';
 
 const PdfResourceCard = ({ id, title, imageId, pdfId, pdfFileName, onDelete, onEdit, inDashboard = false }) => {
-  const handleOpenPdf = async (e) => {
+  const handleDownloadPdf = async (e) => {
     e.preventDefault();
 
     try {
-      // Make sure we pass the filename with .pdf extension to ensure proper handling in all browsers
-      let fileName = pdfFileName || `${title.replace(/\s+/g, '_')}.pdf`;
-
-      // Ensure the filename has .pdf extension
-      if (!fileName.toLowerCase().endsWith('.pdf')) {
-        fileName += '.pdf';
-      }
-
-      await secureOpenPdfInNewTab(pdfId, fileName);
+      await secureDownloadFile(pdfId, pdfFileName || `${title.replace(/\s+/g, '_')}.pdf`);
     } catch (error) {
-      console.error('Error opening PDF:', error);
-      alert('Failed to open PDF. Please try again.');
+      console.error('Error downloading PDF:', error);
+      alert('Failed to download PDF. Please try again.');
     }
   };
 
@@ -57,14 +49,13 @@ const PdfResourceCard = ({ id, title, imageId, pdfId, pdfFileName, onDelete, onE
           </div>
         ) : (
           <button
-            onClick={handleOpenPdf}
+            onClick={handleDownloadPdf}
             className="mt-auto bg-yellow-500 hover:bg-yellow-600 text-white px-4 py-2 rounded-lg flex items-center justify-center gap-2 text-sm transition duration-200 ease-in-out transform hover:scale-105 active:scale-95 w-full"
           >
             <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
-              <path d="M11 3a1 1 0 100 2h2.586l-6.293 6.293a1 1 0 101.414 1.414L15 6.414V9a1 1 0 102 0V4a1 1 0 00-1-1h-5z" />
-              <path d="M5 5a2 2 0 00-2 2v8a2 2 0 002 2h8a2 2 0 002-2v-3a1 1 0 10-2 0v3H5V7h3a1 1 0 000-2H5z" />
+              <path fillRule="evenodd" d="M3 17a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm3.293-7.707a1 1 0 011.414 0L9 10.586V3a1 1 0 112 0v7.586l1.293-1.293a1 1 0 111.414 1.414l-3 3a1 1 0 01-1.414 0l-3-3a1 1 0 010-1.414z" clipRule="evenodd" />
             </svg>
-            Read
+            Download
           </button>
         )}
       </div>

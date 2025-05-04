@@ -54,86 +54,38 @@ export const secureDownloadFile = async (fileId, fileName) => {
 
 /**
  * Securely open a PDF file in a new tab from Appwrite storage
- * This method works across all browsers including Safari
  * @param {string} fileId - The ID of the file to open
- * @param {string} fileName - Optional filename to use
  * @returns {Promise<void>}
  */
-export const secureOpenPdfInNewTab = async (fileId, fileName = '') => {
+export const secureOpenPdfInNewTab = async (fileId) => {
   try {
     if (!fileId) {
       throw new Error('No file ID provided');
     }
 
-    // Ensure the filename has .pdf extension
-    let safeName = fileName || 'document.pdf';
-    if (!safeName.toLowerCase().endsWith('.pdf')) {
-      safeName += '.pdf';
-    }
-
     // Create a download URL with the Appwrite SDK
     const downloadUrl = storage.getFileDownload(BUCKET_ID, fileId);
 
-    // Detect Safari browser
-    const isSafari = /^((?!chrome|android).)*safari/i.test(navigator.userAgent);
+    // Fetch the file directly using the browser's fetch API
+    const response = await fetch(downloadUrl);
 
-    if (isSafari) {
-      // Safari-specific approach
-      // Fetch the file directly using the browser's fetch API
-      const response = await fetch(downloadUrl);
-
-      if (!response.ok) {
-        throw new Error(`Failed to fetch file: ${response.statusText}`);
-      }
-
-      // Get the file as a blob
-      const blob = await response.blob();
-
-      // Ensure the blob has the correct MIME type for PDFs
-      const pdfBlob = new Blob([blob], { type: 'application/pdf' });
-
-      // Create a data URL for the PDF (works in Safari)
-      const reader = new FileReader();
-
-      reader.onload = function(e) {
-        // Open in a new window with the data URL
-        const pdfWindow = window.open('', '_blank');
-        if (pdfWindow) {
-          pdfWindow.document.write(
-            `<!DOCTYPE html>
-            <html>
-              <head>
-                <title>${safeName}</title>
-                <meta name="viewport" content="width=device-width, initial-scale=1.0">
-                <style>
-                  body, html { margin: 0; padding: 0; height: 100%; overflow: hidden; }
-                  .pdf-container { width: 100%; height: 100%; }
-                </style>
-              </head>
-              <body>
-                <embed class="pdf-container" src="${e.target.result}" type="application/pdf">
-              </body>
-            </html>`
-          );
-          pdfWindow.document.close();
-        } else {
-          alert('Please allow pop-ups to view the PDF');
-        }
-      };
-
-      // Read the blob as a data URL
-      reader.readAsDataURL(pdfBlob);
-    } else {
-      // For Chrome, Firefox, Edge, etc.
-      // Create a direct URL to the file with a .pdf extension hint
-      // This approach works better in modern browsers
-
-      // Create a URL with a filename hint
-      const enhancedUrl = `${downloadUrl}&filename=${encodeURIComponent(safeName)}`;
-
-      // Open in a new tab
-      window.open(enhancedUrl, '_blank');
+    if (!response.ok) {
+      throw new Error(`Failed to fetch file: ${response.statusText}`);
     }
+
+    // Get the file as a blob
+    const blob = await response.blob();
+
+    // Create a blob URL for the file
+    const blobUrl = URL.createObjectURL(blob);
+
+    // Open the blob URL in a new tab
+    window.open(blobUrl, '_blank');
+
+    // Clean up the blob URL after a longer timeout to ensure the tab has time to load
+    setTimeout(() => {
+      URL.revokeObjectURL(blobUrl);
+    }, 30000); // 30 seconds should be enough for most PDFs to load
 
     return true;
   } catch (error) {
