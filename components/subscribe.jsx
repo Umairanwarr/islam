@@ -2,9 +2,9 @@ import React, { useState, useRef, useEffect } from 'react';
 import emailjs from '@emailjs/browser';
 
 // EmailJS credentials
-const SERVICE_ID = 'service_lhmpmij';
-const TEMPLATE_ID = 'template_l2cgggh'; // Using the same template as Contact form
-const PUBLIC_KEY = 'mekVCr_83sqRQIbjD';
+const SERVICE_ID = 'service_bp4fnk7';
+const TEMPLATE_ID = 'template_fio1jwe'; // Using the same template as Contact form
+const PUBLIC_KEY = 'c6Aywq8By48mjZGcU';
 
 function Subscribe() {
   const form = useRef();

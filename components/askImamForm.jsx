@@ -2,9 +2,9 @@ import React, { useState, useRef } from 'react';
 import emailjs from '@emailjs/browser';
 
 // EmailJS credentials
-const SERVICE_ID = 'service_lhmpmij';
-const TEMPLATE_ID = 'template_l5z7bte'; // Admin notification template ID for Ask Imam form
-const PUBLIC_KEY = 'mekVCr_83sqRQIbjD';
+const SERVICE_ID = 'service_bp4fnk7';
+const TEMPLATE_ID = 'template_nylizon'; // Admin notification template ID for Ask Imam form
+const PUBLIC_KEY = 'c6Aywq8By48mjZGcU';
 
 const AskImamForm = () => {
   const form = useRef();

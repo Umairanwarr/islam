@@ -6,28 +6,28 @@ function About() {
       <div className="max-w-7xl mx-auto">
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-10 items-center">
           {/* Image Column */}
-          <div className="about-image">
-            <img
-              src="/about-me.jpg"
-              alt="Imam Abu Saad"
-              className="rounded-lg shadow-md w-full"
-            />
+          <div className="about-image relative">
+            <div className="absolute inset-0 bg-gradient-to-br from-teal-500/20 to-green-500/20 rounded-lg"></div>
+            <div className="relative p-2">
+              <img
+                src="/about-me.png"
+                alt="Imam Abu Saad"
+                className="rounded-lg shadow-lg w-full border-4 border-white"
+              />
+            </div>
           </div>
 
           {/* Content Column */}
           <div className="about-content">
-            <h2 className="text-4xl font-bold text-gray-800 mb-6">About Me</h2>
+            <h2 className="text-4xl font-bold text-gray-800 mb-6">About Abu Saad Abdullah Yahya</h2>
             <p className="text-lg text-gray-600 mb-6">
-              As-salāmu ʿalaykum wa-raḥmatu -llāhi wa-barakātuhu (Peace be upon you and God's mercy and blessings).
-              I am Imam Abu Saad, a dedicated scholar with over 27 years of experience in Islamic education.
+              Abu Saad Abdullah Yahya is a dedicated Islamic teacher, Quran reciter, and former Imam with over 27 years of experience teaching and leading prayers in Makkah, Saudi Arabia, and the UK. His passion lies in sharing the beauty and wisdom of the Qur'an through heartfelt recitations, educational videos, and spiritual reminders that inspire Muslims around the world.
             </p>
             <p className="text-lg text-gray-600 mb-6">
-              My journey began in the blessed city of Makkah, where I studied under respected scholars at the Islamic University.
-              After completing my studies, I moved to the United Kingdom to serve the Muslim community here.
+              Currently based in the UK, Abu Saad continues his mission of Dawah online, producing daily Qur'anic content across multiple platforms including YouTube, Instagram, Twitter, and TikTok. His calm and clear style, rooted in traditional knowledge, makes Islamic learning accessible and spiritually uplifting for all audiences.
             </p>
             <p className="text-lg text-gray-600 mb-6">
-              Over the years, I have focused on making Islamic knowledge accessible to Muslims of all backgrounds, particularly
-              those living in the West. My approach combines traditional Islamic scholarship with an understanding of contemporary issues.
+              This website serves as a hub for his recitations, lectures, teaching resources, and opportunities to connect for educational and speaking engagements.
             </p>
 
             <div className="mt-8 grid grid-cols-1 sm:grid-cols-2 gap-4">

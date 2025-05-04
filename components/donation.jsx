@@ -71,8 +71,7 @@ function Donation() {
             </div>
 
             <div className="mt-8 text-center text-sm text-gray-500">
-              <p>Donations are secure and encrypted. You can also donate by direct bank transfer. Contact us for details.</p>
-              <p className="mt-2">For tax deduction information or other donation methods, please email <span className="text-teal-600">donate@imamwebsite.com</span></p>
+              <p>Donations are secure and encrypted.</p>
             </div>
           </div>
         </div>

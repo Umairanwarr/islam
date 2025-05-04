@@ -9,6 +9,7 @@ import AddTestimonial from './addTestimonial';
 import EditTestimonial from './editTestimonial';
 import AddVideoLink from './addVideoLink';
 import AddPrayerPdf from './addPrayerPdf';
+import AddPrayerTime from './addPrayerTime';
 import SurahCard from './SurahCard';
 import ReminderCard from './ReminderCard';
 import TestimonialCard from './TestimonialCard';
@@ -44,6 +45,10 @@ const Dashboard = () => {
   const [showAddVideoLink, setShowAddVideoLink] = useState(false);
   const [currentVideoType, setCurrentVideoType] = useState('');
   const [showAddPrayerPdf, setShowAddPrayerPdf] = useState(false);
+
+  // Prayer Times state
+  const [prayerTimes, setPrayerTimes] = useState(null);
+  const [showAddPrayerTime, setShowAddPrayerTime] = useState(false);
 
   useEffect(() => {
     const fetchSurahs = async () => {
@@ -157,6 +162,12 @@ const Dashboard = () => {
             setPrayerPdfUrl(url);
           }
         }
+
+        // Fetch prayer times
+        const prayerTimesDoc = await getDoc(doc(db, 'settings', 'prayerTimes'));
+        if (prayerTimesDoc.exists()) {
+          setPrayerTimes(prayerTimesDoc.data());
+        }
       } catch (error) {
         console.error('Error fetching settings:', error);
       }
@@ -206,6 +217,19 @@ const Dashboard = () => {
     setPrayerPdfId(fileId);
     const url = getFileUrl(fileId);
     setPrayerPdfUrl(url);
+  };
+
+  // Prayer Times handlers
+  const handleAddPrayerTime = () => {
+    setShowAddPrayerTime(true);
+  };
+
+  const handleClosePrayerTime = () => {
+    setShowAddPrayerTime(false);
+  };
+
+  const handleUpdatePrayerTime = (newPrayerTimes) => {
+    setPrayerTimes(newPrayerTimes);
   };
 
   const handleAddSurah = () => {
@@ -623,6 +647,57 @@ const Dashboard = () => {
               </div>
             </div>
 
+            {/* Prayer Times Row */}
+            <div className="bg-gray-50 rounded-lg p-4 shadow border border-gray-100">
+              <div className="flex justify-between items-start mb-2">
+                <div>
+                  <h3 className="font-bold text-lg text-gray-800">Prayer Times</h3>
+                  <p className="text-gray-600 text-sm">Manage daily prayer times</p>
+                </div>
+                <button
+                  onClick={handleAddPrayerTime}
+                  className="bg-[#08948c] hover:bg-[#067a73] text-white px-3 py-1.5 rounded-lg flex items-center gap-1 text-sm transition duration-200 ease-in-out transform hover:scale-105 active:scale-95 shadow-md"
+                >
+                  <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" viewBox="0 0 20 20" fill="currentColor">
+                    <path d="M13.586 3.586a2 2 0 112.828 2.828l-.793.793-2.828-2.828.793-.793zM11.379 5.793L3 14.172V17h2.828l8.38-8.379-2.83-2.828z" />
+                  </svg>
+                  {prayerTimes ? 'Update' : 'Add'}
+                </button>
+              </div>
+              <div className="mt-2">
+                {prayerTimes ? (
+                  <div className="grid grid-cols-2 md:grid-cols-3 gap-2 text-sm">
+                    <div className="flex items-center">
+                      <span className="font-medium text-gray-700 mr-2">Fajr:</span>
+                      <span>{prayerTimes.fajrBegin} / {prayerTimes.fajrJamat}</span>
+                    </div>
+                    <div className="flex items-center">
+                      <span className="font-medium text-gray-700 mr-2">Dhuhr:</span>
+                      <span>{prayerTimes.dhuhrBegin} / {prayerTimes.dhuhrJamat}</span>
+                    </div>
+                    <div className="flex items-center">
+                      <span className="font-medium text-gray-700 mr-2">Asr:</span>
+                      <span>{prayerTimes.asrBegin} / {prayerTimes.asrJamat}</span>
+                    </div>
+                    <div className="flex items-center">
+                      <span className="font-medium text-gray-700 mr-2">Maghrib:</span>
+                      <span>{prayerTimes.maghribBegin}</span>
+                    </div>
+                    <div className="flex items-center">
+                      <span className="font-medium text-gray-700 mr-2">Isha:</span>
+                      <span>{prayerTimes.ishaBegin} / {prayerTimes.ishaJamat}</span>
+                    </div>
+                    <div className="flex items-center">
+                      <span className="font-medium text-gray-700 mr-2">Jummah:</span>
+                      <span>{prayerTimes.jummahKhutba} / {prayerTimes.jummahJamat}</span>
+                    </div>
+                  </div>
+                ) : (
+                  <p className="text-gray-500 italic text-sm">No prayer times set</p>
+                )}
+              </div>
+            </div>
+
             {/* Prayer PDF Row */}
             <div className="bg-gray-50 rounded-lg p-4 shadow border border-gray-100">
               <div className="flex justify-between items-start mb-2">
@@ -916,6 +991,13 @@ const Dashboard = () => {
           onClose={handleClosePrayerPdf}
           onUpdate={handleUpdatePrayerPdf}
           currentPdfId={prayerPdfId}
+        />
+      )}
+
+      {showAddPrayerTime && (
+        <AddPrayerTime
+          onClose={handleClosePrayerTime}
+          onUpdate={handleUpdatePrayerTime}
         />
       )}
     </div>

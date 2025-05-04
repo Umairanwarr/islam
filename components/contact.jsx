@@ -2,9 +2,9 @@ import React, { useState, useRef, useEffect } from 'react';
 import emailjs from '@emailjs/browser';
 
 // EmailJS credentials
-const SERVICE_ID = 'service_lhmpmij';
-const TEMPLATE_ID = 'template_l2cgggh'; // Contact form template ID
-const PUBLIC_KEY = 'mekVCr_83sqRQIbjD';
+const SERVICE_ID = 'service_bp4fnk7';
+const TEMPLATE_ID = 'template_fio1jwe'; // Contact form template ID
+const PUBLIC_KEY = 'c6Aywq8By48mjZGcU';
 
 function Contact() {
   const form = useRef();
@@ -111,7 +111,7 @@ function Contact() {
                 </div>
                 <div>
                   <h3 className="text-lg font-semibold text-gray-800">Email</h3>
-                  <p className="text-gray-600">contact@imamwebsite.com</p>
+                  <p className="text-gray-600">arraheeq@gmail.com</p>
                 </div>
               </div>
 
@@ -124,7 +124,7 @@ function Contact() {
                 </div>
                 <div>
                   <h3 className="text-lg font-semibold text-gray-800">Phone</h3>
-                  <p className="text-gray-600">+44 123 456 7890</p>
+                  <p className="text-gray-600">+44 7403 978404</p>
                 </div>
               </div>
             </div>

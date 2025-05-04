@@ -89,10 +89,20 @@ function Hero() {
       {/* Content Section */}
       <div className="relative z-10 container mx-auto px-4 sm:px-6 lg:px-8 flex flex-col lg:flex-row items-center">
         <div className="w-full lg:w-1/2 text-gray-800 py-6 lg:py-24 hero-content">
+          <div className="w-full flex justify-center mb-4">
+            <div className="inline-block px-4 sm:px-6 py-1.5 sm:py-2 rounded-full bg-white/90 backdrop-blur-sm shadow-lg border border-teal-100 max-w-[90%] sm:max-w-none text-center">
+              <p className="text-sm sm:text-base md:text-lg text-[#08948c] font-semibold mb-0.5 sm:mb-1 tracking-wide text-center">
+                Hall Green Community Centre
+              </p>
+              <p className="text-sm sm:text-base md:text-lg text-[#08948c] font-semibold tracking-wide text-center">
+                UK Registered Charity No. 1144170
+              </p>
+            </div>
+          </div>
           <p className="text-xl sm:text-3xl text-teal-600 font-bold mb-2 text-center">Assalamu Alaikum wa Rahmatullah</p>
           <h1 className="text-3xl sm:text-5xl md:text-6xl font-bold mb-2 sm:mb-4 leading-tight">Welcome to my official website</h1>
           <p className="text-sm sm:text-lg text-gray-600 mb-3 sm:mb-6">
-            A place dedicated to spreading the light of the Quran and Sunnah. With over 27 years of experience in Islamic teaching—beginning in the blessed city of Makkah and continuing across the UK—my mission is to make authentic Islamic knowledge accessible to everyone, everywhere.
+            A place dedicated to spreading the light of the Quran and Sunnah. With over 27 years of experience in Islamic teaching—beginning in the blessed city of Makkah and continuing across the UK. Our mission is to make authentic Islamic knowledge accessible to everyone, everywhere.
           </p>
           <p className="text-sm sm:text-lg text-gray-600 mb-4 sm:mb-8">
             Explore daily reminders, Quran recitations, prayer times, and educational resources. Let's walk together on the path of knowledge and faith.
