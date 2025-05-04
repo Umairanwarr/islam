@@ -7,7 +7,15 @@ const PdfResourceCard = ({ id, title, imageId, pdfId, pdfFileName, onDelete, onE
     e.preventDefault();
 
     try {
-      await secureOpenPdfInNewTab(pdfId);
+      // Make sure we pass the filename with .pdf extension to ensure proper handling in all browsers
+      let fileName = pdfFileName || `${title.replace(/\s+/g, '_')}.pdf`;
+
+      // Ensure the filename has .pdf extension
+      if (!fileName.toLowerCase().endsWith('.pdf')) {
+        fileName += '.pdf';
+      }
+
+      await secureOpenPdfInNewTab(pdfId, fileName);
     } catch (error) {
       console.error('Error opening PDF:', error);
       alert('Failed to open PDF. Please try again.');

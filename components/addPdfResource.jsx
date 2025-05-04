@@ -21,10 +21,10 @@ const AddPdfResource = ({ onClose, onAddResource }) => {
         setImagePreview('');
         return;
       }
-      
+
       setImage(file);
       setError('');
-      
+
       // Create image preview
       const reader = new FileReader();
       reader.onloadend = () => {
@@ -43,9 +43,15 @@ const AddPdfResource = ({ onClose, onAddResource }) => {
         setPdfFileName('');
         return;
       }
-      
+
+      // Ensure the filename has .pdf extension
+      let fileName = file.name;
+      if (!fileName.toLowerCase().endsWith('.pdf')) {
+        fileName += '.pdf';
+      }
+
       setPdfFile(file);
-      setPdfFileName(file.name);
+      setPdfFileName(fileName);
       setError('');
     }
   };
@@ -77,25 +83,31 @@ const AddPdfResource = ({ onClose, onAddResource }) => {
     try {
       // Upload image to Appwrite
       const imageUploadRes = await uploadFile(image);
-      
+
       // Upload PDF to Appwrite
       const pdfUploadRes = await uploadFile(pdfFile);
-      
+
       if (imageUploadRes && imageUploadRes.$id && pdfUploadRes && pdfUploadRes.$id) {
+        // Ensure the PDF filename has the .pdf extension
+        let safePdfFileName = pdfFileName;
+        if (!safePdfFileName.toLowerCase().endsWith('.pdf')) {
+          safePdfFileName += '.pdf';
+        }
+
         // Save resource data to Firestore
         const newResource = {
           title: title.trim(),
           imageId: imageUploadRes.$id,
           pdfId: pdfUploadRes.$id,
-          pdfFileName: pdfFileName,
+          pdfFileName: safePdfFileName,
           createdAt: serverTimestamp()
         };
 
         const docRef = await addDoc(collection(db, 'pdfResources'), newResource);
-        
+
         // Add the ID to the resource object
         newResource.id = docRef.id;
-        
+
         // Notify parent component
         onAddResource(newResource);
         onClose();
@@ -114,13 +126,13 @@ const AddPdfResource = ({ onClose, onAddResource }) => {
     <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 transition-opacity duration-300 p-4">
       <div className="bg-white rounded-lg p-6 w-full max-w-md transform transition-all duration-300 max-h-[90vh] overflow-y-auto">
         <h2 className="text-2xl font-bold mb-4">Add PDF Resource</h2>
-        
+
         {error && (
           <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mb-4">
             {error}
           </div>
         )}
-        
+
         <form onSubmit={handleSubmit}>
           {/* Title Field */}
           <div className="mb-4">
@@ -136,13 +148,13 @@ const AddPdfResource = ({ onClose, onAddResource }) => {
               placeholder="Enter resource title"
             />
           </div>
-          
+
           {/* Image Upload */}
           <div className="mb-4">
             <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="image">
               Cover Image
             </label>
-            
+
             <div className="mt-1 flex justify-center px-6 pt-5 pb-6 border-2 border-gray-300 border-dashed rounded-md">
               <div className="space-y-1 text-center">
                 {!imagePreview ? (
@@ -205,13 +217,13 @@ const AddPdfResource = ({ onClose, onAddResource }) => {
               </div>
             </div>
           </div>
-          
+
           {/* PDF Upload */}
           <div className="mb-4">
             <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="pdfFile">
               PDF File
             </label>
-            
+
             <div className="mt-1 flex justify-center px-6 pt-5 pb-6 border-2 border-gray-300 border-dashed rounded-md">
               <div className="space-y-1 text-center">
                 <svg
@@ -248,7 +260,7 @@ const AddPdfResource = ({ onClose, onAddResource }) => {
                 <p className="text-xs text-gray-500">PDF up to 10MB</p>
               </div>
             </div>
-            
+
             {pdfFileName && (
               <div className="mt-2 text-sm text-gray-700 flex items-center">
                 <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 text-[#08948c] mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">

@@ -28,10 +28,10 @@ const EditPdfResource = ({ resource, onClose, onUpdate }) => {
         setImagePreview('');
         return;
       }
-      
+
       setImage(file);
       setError('');
-      
+
       // Create image preview
       const reader = new FileReader();
       reader.onloadend = () => {
@@ -50,9 +50,15 @@ const EditPdfResource = ({ resource, onClose, onUpdate }) => {
         setPdfFileName('');
         return;
       }
-      
+
+      // Ensure the filename has .pdf extension
+      let fileName = file.name;
+      if (!fileName.toLowerCase().endsWith('.pdf')) {
+        fileName += '.pdf';
+      }
+
       setPdfFile(file);
-      setPdfFileName(file.name);
+      setPdfFileName(fileName);
       setError('');
     }
   };
@@ -71,7 +77,7 @@ const EditPdfResource = ({ resource, onClose, onUpdate }) => {
 
     try {
       const updatedResource = { ...resource };
-      
+
       // Only upload new image if provided
       if (image) {
         const imageUploadRes = await uploadFile(image);
@@ -81,21 +87,30 @@ const EditPdfResource = ({ resource, onClose, onUpdate }) => {
           throw new Error('Image upload failed');
         }
       }
-      
+
       // Only upload new PDF if provided
       if (pdfFile) {
         const pdfUploadRes = await uploadFile(pdfFile);
         if (pdfUploadRes && pdfUploadRes.$id) {
           updatedResource.pdfId = pdfUploadRes.$id;
-          updatedResource.pdfFileName = pdfFileName;
+
+          // Ensure the PDF filename has the .pdf extension
+          let safePdfFileName = pdfFileName;
+          if (!safePdfFileName.toLowerCase().endsWith('.pdf')) {
+            safePdfFileName += '.pdf';
+          }
+          updatedResource.pdfFileName = safePdfFileName;
         } else {
           throw new Error('PDF upload failed');
         }
+      } else if (updatedResource.pdfFileName && !updatedResource.pdfFileName.toLowerCase().endsWith('.pdf')) {
+        // If not uploading a new PDF but the existing filename doesn't have .pdf extension, add it
+        updatedResource.pdfFileName += '.pdf';
       }
-      
+
       // Update title
       updatedResource.title = title.trim();
-      
+
       // Update document in Firestore
       const resourceRef = doc(db, 'pdfResources', resource.id);
       await updateDoc(resourceRef, {
@@ -105,7 +120,7 @@ const EditPdfResource = ({ resource, onClose, onUpdate }) => {
         pdfFileName: updatedResource.pdfFileName,
         updatedAt: new Date()
       });
-      
+
       // Notify parent component
       onUpdate(updatedResource);
       onClose();
@@ -121,13 +136,13 @@ const EditPdfResource = ({ resource, onClose, onUpdate }) => {
     <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 transition-opacity duration-300 p-4">
       <div className="bg-white rounded-lg p-6 w-full max-w-md transform transition-all duration-300 max-h-[90vh] overflow-y-auto">
         <h2 className="text-2xl font-bold mb-4">Edit PDF Resource</h2>
-        
+
         {error && (
           <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mb-4">
             {error}
           </div>
         )}
-        
+
         <form onSubmit={handleSubmit}>
           {/* Title Field */}
           <div className="mb-4">
@@ -143,13 +158,13 @@ const EditPdfResource = ({ resource, onClose, onUpdate }) => {
               placeholder="Enter resource title"
             />
           </div>
-          
+
           {/* Image Upload */}
           <div className="mb-4">
             <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="image">
               Cover Image
             </label>
-            
+
             <div className="mt-1 flex justify-center px-6 pt-5 pb-6 border-2 border-gray-300 border-dashed rounded-md">
               <div className="space-y-1 text-center">
                 {!imagePreview ? (
@@ -212,13 +227,13 @@ const EditPdfResource = ({ resource, onClose, onUpdate }) => {
               </div>
             </div>
           </div>
-          
+
           {/* PDF Upload */}
           <div className="mb-4">
             <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="pdfFile">
               PDF File {pdfFileName && <span className="font-normal text-gray-500">(Current: {pdfFileName})</span>}
             </label>
-            
+
             <div className="mt-1 flex justify-center px-6 pt-5 pb-6 border-2 border-gray-300 border-dashed rounded-md">
               <div className="space-y-1 text-center">
                 <svg
@@ -255,7 +270,7 @@ const EditPdfResource = ({ resource, onClose, onUpdate }) => {
                 <p className="text-xs text-gray-500">PDF up to 10MB</p>
               </div>
             </div>
-            
+
             {pdfFile && (
               <div className="mt-2 text-sm text-gray-700 flex items-center">
                 <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 text-[#08948c] mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
