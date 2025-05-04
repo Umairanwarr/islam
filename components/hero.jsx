@@ -69,7 +69,7 @@ function Hero() {
       await secureDownloadFile(prayerPdfId, prayerPdfName);
     } catch (error) {
       console.error('Error downloading PDF:', error);
-      alert('Failed to download PDF. Please try again.');
+      alert('No Timetable Uploaded Yet. Please try later.');
     }
   };
 
@@ -100,7 +100,7 @@ function Hero() {
             </div>
           </div>
           <p className="text-xl sm:text-3xl text-teal-600 font-bold mb-2 text-center">Assalamu Alaikum wa Rahmatullah</p>
-          <h1 className="text-3xl sm:text-5xl md:text-6xl font-bold mb-2 sm:mb-4 leading-tight">Welcome to my official website</h1>
+          <h1 className="text-3xl sm:text-5xl md:text-6xl font-bold mb-2 sm:mb-4 leading-tight">Welcome to official website</h1>
           <p className="text-sm sm:text-lg text-gray-600 mb-3 sm:mb-6">
             A place dedicated to spreading the light of the Quran and Sunnah. With over 27 years of experience in Islamic teaching—beginning in the blessed city of Makkah and continuing across the UK. Our mission is to make authentic Islamic knowledge accessible to everyone, everywhere.
           </p>

@@ -7,12 +7,18 @@ import AddReminder from './addReminder';
 import EditReminder from './editReminder';
 import AddTestimonial from './addTestimonial';
 import EditTestimonial from './editTestimonial';
+import AddBlog from './addBlog';
+import EditBlog from './editBlog';
 import AddVideoLink from './addVideoLink';
 import AddPrayerPdf from './addPrayerPdf';
 import AddPrayerTime from './addPrayerTime';
+import AddPdfResource from './addPdfResource';
+import EditPdfResource from './editPdfResource';
 import SurahCard from './SurahCard';
 import ReminderCard from './ReminderCard';
 import TestimonialCard from './TestimonialCard';
+import BlogCard from './BlogCard';
+import PdfResourceCard from './PdfResourceCard';
 import { db } from '../src/firebase';
 import { collection, getDocs, query, orderBy, doc, deleteDoc, getDoc } from 'firebase/firestore';
 import { deleteFile, getFileUrl } from '../src/appwrite';
@@ -34,6 +40,14 @@ const Dashboard = () => {
   const [showAddTestimonial, setShowAddTestimonial] = useState(false);
   const [showEditTestimonial, setShowEditTestimonial] = useState(false);
   const [currentTestimonial, setCurrentTestimonial] = useState(null);
+  const [blogs, setBlogs] = useState([]);
+  const [showAddBlog, setShowAddBlog] = useState(false);
+  const [showEditBlog, setShowEditBlog] = useState(false);
+  const [currentBlog, setCurrentBlog] = useState(null);
+  const [pdfResources, setPdfResources] = useState([]);
+  const [showAddPdfResource, setShowAddPdfResource] = useState(false);
+  const [showEditPdfResource, setShowEditPdfResource] = useState(false);
+  const [currentPdfResource, setCurrentPdfResource] = useState(null);
 
   // Settings state
   const [videoLinks, setVideoLinks] = useState({
@@ -173,10 +187,52 @@ const Dashboard = () => {
       }
     };
 
+    const fetchBlogs = async () => {
+      try {
+        const blogsQuery = query(
+          collection(db, 'blogs'),
+          orderBy('createdAt', 'desc')
+        );
+        const blogSnapshot = await getDocs(blogsQuery);
+        const blogList = blogSnapshot.docs.map(doc => ({
+          id: doc.id,
+          ...doc.data(),
+          createdAt: doc.data().createdAt ?
+            (doc.data().createdAt.toDate ? doc.data().createdAt.toDate().toISOString() : doc.data().createdAt)
+            : new Date().toISOString()
+        }));
+        setBlogs(blogList);
+      } catch (error) {
+        console.error('Error fetching blogs:', error);
+      }
+    };
+
+    const fetchPdfResources = async () => {
+      try {
+        const pdfResourcesQuery = query(
+          collection(db, 'pdfResources'),
+          orderBy('createdAt', 'desc')
+        );
+        const pdfResourceSnapshot = await getDocs(pdfResourcesQuery);
+        const pdfResourceList = pdfResourceSnapshot.docs.map(doc => ({
+          id: doc.id,
+          ...doc.data(),
+          createdAt: doc.data().createdAt ?
+            (doc.data().createdAt.toDate ? doc.data().createdAt.toDate().toISOString() : doc.data().createdAt)
+            : new Date().toISOString()
+        }));
+        setPdfResources(pdfResourceList);
+      } catch (error) {
+        console.error('Error fetching PDF resources:', error);
+      }
+    };
+
     fetchSurahs();
     fetchClasses();
     fetchReminders();
     fetchTestimonials();
+    fetchBlogs();
+    fetchPdfResources();
     fetchSettings();
   }, []);
 
@@ -463,6 +519,135 @@ const Dashboard = () => {
     }
   };
 
+  // Blog handlers
+  const handleAddBlog = () => {
+    setShowAddBlog(true);
+  };
+
+  const handleCloseAddBlog = () => {
+    setShowAddBlog(false);
+  };
+
+  const handleSubmitBlog = (newBlog) => {
+    setBlogs(prev => [newBlog, ...prev]);
+  };
+
+  const handleEditBlog = (id) => {
+    const blogToEdit = blogs.find(blog => blog.id === id);
+    if (blogToEdit) {
+      setCurrentBlog(blogToEdit);
+      setShowEditBlog(true);
+    }
+  };
+
+  const handleCloseEditBlog = () => {
+    setShowEditBlog(false);
+    setCurrentBlog(null);
+  };
+
+  const handleUpdateBlog = (updatedBlog) => {
+    setBlogs(prev =>
+      prev.map(blog =>
+        blog.id === updatedBlog.id ? updatedBlog : blog
+      )
+    );
+  };
+
+  const handleDeleteBlog = async (id) => {
+    if (!id) return;
+    const blogToDelete = blogs.find(blog => blog.id === id);
+    if (!blogToDelete) return;
+    if (!window.confirm(`Are you sure you want to delete blog "${blogToDelete.title}"?`)) return;
+    try {
+      // Delete from Firestore
+      await deleteDoc(doc(db, 'blogs', id));
+
+      // Delete image from Appwrite if it exists and is a file ID (not a URL)
+      if (blogToDelete.imageUrl && !blogToDelete.imageUrl.startsWith('http')) {
+        try {
+          await deleteFile(blogToDelete.imageUrl);
+        } catch (imageError) {
+          console.error(`Error deleting image: ${imageError.message}`);
+        }
+      }
+
+      // Update state
+      setBlogs(prev => prev.filter(blog => blog.id !== id));
+      alert(`Blog "${blogToDelete.title}" has been deleted.`);
+    } catch (error) {
+      alert('Failed to delete blog: ' + error.message);
+    }
+  };
+
+  // PDF Resource handlers
+  const handleAddPdfResource = () => {
+    setShowAddPdfResource(true);
+  };
+
+  const handleCloseAddPdfResource = () => {
+    setShowAddPdfResource(false);
+  };
+
+  const handleSubmitPdfResource = (newResource) => {
+    setPdfResources(prev => [newResource, ...prev]);
+  };
+
+  const handleEditPdfResource = (id) => {
+    const resourceToEdit = pdfResources.find(resource => resource.id === id);
+    if (resourceToEdit) {
+      setCurrentPdfResource(resourceToEdit);
+      setShowEditPdfResource(true);
+    }
+  };
+
+  const handleCloseEditPdfResource = () => {
+    setShowEditPdfResource(false);
+    setCurrentPdfResource(null);
+  };
+
+  const handleUpdatePdfResource = (updatedResource) => {
+    setPdfResources(prev =>
+      prev.map(resource =>
+        resource.id === updatedResource.id ? updatedResource : resource
+      )
+    );
+  };
+
+  const handleDeletePdfResource = async (id) => {
+    if (!id) return;
+    const resourceToDelete = pdfResources.find(resource => resource.id === id);
+    if (!resourceToDelete) return;
+    if (!window.confirm(`Are you sure you want to delete PDF resource "${resourceToDelete.title}"?`)) return;
+    try {
+      // Delete from Firestore
+      await deleteDoc(doc(db, 'pdfResources', id));
+
+      // Delete image from Appwrite if it exists
+      if (resourceToDelete.imageId) {
+        try {
+          await deleteFile(resourceToDelete.imageId);
+        } catch (imageError) {
+          console.error(`Error deleting image: ${imageError.message}`);
+        }
+      }
+
+      // Delete PDF from Appwrite if it exists
+      if (resourceToDelete.pdfId) {
+        try {
+          await deleteFile(resourceToDelete.pdfId);
+        } catch (pdfError) {
+          console.error(`Error deleting PDF: ${pdfError.message}`);
+        }
+      }
+
+      // Update state
+      setPdfResources(prev => prev.filter(resource => resource.id !== id));
+      alert(`PDF Resource "${resourceToDelete.title}" has been deleted.`);
+    } catch (error) {
+      alert('Failed to delete PDF resource: ' + error.message);
+    }
+  };
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100">
       {/* Header Section */}
@@ -508,6 +693,24 @@ const Dashboard = () => {
                   <path fillRule="evenodd" d="M10 3a1 1 0 011 1v5h5a1 1 0 110 2h-5v5a1 1 0 11-2 0v-5H4a1 1 0 110-2h5V4a1 1 0 011-1z" clipRule="evenodd" />
                 </svg>
                 <span className="hidden xs:inline">Add</span> Testimonial
+              </button>
+              <button
+                onClick={handleAddBlog}
+                className="bg-indigo-600 hover:bg-indigo-700 text-white px-3 sm:px-4 py-2 rounded-lg flex items-center gap-1 sm:gap-2 text-sm sm:text-base transition duration-200 ease-in-out transform hover:scale-105 active:scale-95 shadow-md"
+              >
+                <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 sm:h-5 sm:w-5" viewBox="0 0 20 20" fill="currentColor">
+                  <path fillRule="evenodd" d="M10 3a1 1 0 011 1v5h5a1 1 0 110 2h-5v5a1 1 0 11-2 0v-5H4a1 1 0 110-2h5V4a1 1 0 011-1z" clipRule="evenodd" />
+                </svg>
+                <span className="hidden xs:inline">Add</span> Blog
+              </button>
+              <button
+                onClick={handleAddPdfResource}
+                className="bg-yellow-500 hover:bg-yellow-600 text-white px-3 sm:px-4 py-2 rounded-lg flex items-center gap-1 sm:gap-2 text-sm sm:text-base transition duration-200 ease-in-out transform hover:scale-105 active:scale-95 shadow-md"
+              >
+                <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 sm:h-5 sm:w-5" viewBox="0 0 20 20" fill="currentColor">
+                  <path fillRule="evenodd" d="M10 3a1 1 0 011 1v5h5a1 1 0 110 2h-5v5a1 1 0 11-2 0v-5H4a1 1 0 110-2h5V4a1 1 0 011-1z" clipRule="evenodd" />
+                </svg>
+                <span className="hidden xs:inline">Add</span> PDF
               </button>
             </div>
           </div>
@@ -871,6 +1074,91 @@ const Dashboard = () => {
           </div>
         </div>
 
+        {/* Blogs Section */}
+        <div className="bg-white rounded-xl shadow-sm p-4 sm:p-6 border border-gray-100 mt-6 sm:mt-8">
+          <div className="flex justify-between items-center mb-4 sm:mb-6">
+            <h2 className="text-lg sm:text-xl font-semibold text-gray-900">My Blogs</h2>
+          </div>
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
+            {blogs.length === 0 ? (
+              <div className="col-span-full text-center py-12">
+                <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-gray-100 mb-4">
+                  <svg xmlns="http://www.w3.org/2000/svg" className="h-8 w-8 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 20H5a2 2 0 01-2-2V6a2 2 0 012-2h10a2 2 0 012 2v1m2 13a2 2 0 01-2-2V7m2 13a2 2 0 002-2V9a2 2 0 00-2-2h-2m-4-3H9M7 16h6M7 8h6v4H7V8z" />
+                  </svg>
+                </div>
+                <h3 className="text-lg font-medium text-gray-900 mb-1">No Blogs Yet</h3>
+                <p className="text-gray-500 mb-4">Start by adding your first blog</p>
+                <button
+                  onClick={handleAddBlog}
+                  className="bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-2 rounded-lg flex items-center gap-2 transition duration-200 ease-in-out transform hover:scale-105 active:scale-95 shadow-md mx-auto"
+                >
+                  <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                    <path fillRule="evenodd" d="M10 3a1 1 0 011 1v5h5a1 1 0 110 2h-5v5a1 1 0 11-2 0v-5H4a1 1 0 110-2h5V4a1 1 0 011-1z" clipRule="evenodd" />
+                  </svg>
+                  Add Your First Blog
+                </button>
+              </div>
+            ) : (
+              blogs.map((blog, idx) => (
+                <BlogCard
+                  key={blog.id || idx}
+                  id={blog.id}
+                  title={blog.title}
+                  bloggerLink={blog.bloggerLink}
+                  imageUrl={blog.imageUrl}
+                  onDelete={handleDeleteBlog}
+                  onEdit={handleEditBlog}
+                  inDashboard={true}
+                />
+              ))
+            )}
+          </div>
+        </div>
+
+        {/* PDF Resources Section */}
+        <div className="bg-white rounded-xl shadow-sm p-4 sm:p-6 border border-gray-100 mt-6 sm:mt-8">
+          <div className="flex justify-between items-center mb-4 sm:mb-6">
+            <h2 className="text-lg sm:text-xl font-semibold text-gray-900">PDF Resources</h2>
+          </div>
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
+            {pdfResources.length === 0 ? (
+              <div className="col-span-full text-center py-12">
+                <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-gray-100 mb-4">
+                  <svg xmlns="http://www.w3.org/2000/svg" className="h-8 w-8 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 21h10a2 2 0 002-2V9.414a1 1 0 00-.293-.707l-5.414-5.414A1 1 0 0012.586 3H7a2 2 0 00-2 2v14a2 2 0 002 2z" />
+                  </svg>
+                </div>
+                <h3 className="text-lg font-medium text-gray-900 mb-1">No PDF Resources Yet</h3>
+                <p className="text-gray-500 mb-4">Start by adding your first PDF resource</p>
+                <button
+                  onClick={handleAddPdfResource}
+                  className="bg-yellow-500 hover:bg-yellow-600 text-white px-4 py-2 rounded-lg flex items-center gap-2 transition duration-200 ease-in-out transform hover:scale-105 active:scale-95 shadow-md mx-auto"
+                >
+                  <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                    <path fillRule="evenodd" d="M10 3a1 1 0 011 1v5h5a1 1 0 110 2h-5v5a1 1 0 11-2 0v-5H4a1 1 0 110-2h5V4a1 1 0 011-1z" clipRule="evenodd" />
+                  </svg>
+                  Add Your First PDF Resource
+                </button>
+              </div>
+            ) : (
+              pdfResources.map((resource, idx) => (
+                <PdfResourceCard
+                  key={resource.id || idx}
+                  id={resource.id}
+                  title={resource.title}
+                  imageId={resource.imageId}
+                  pdfId={resource.pdfId}
+                  pdfFileName={resource.pdfFileName}
+                  onDelete={handleDeletePdfResource}
+                  onEdit={handleEditPdfResource}
+                  inDashboard={true}
+                />
+              ))
+            )}
+          </div>
+        </div>
+
         {/* Testimonials Section */}
         <div className="bg-white rounded-xl shadow-sm p-4 sm:p-6 border border-gray-100 mt-6 sm:mt-8">
           <div className="flex justify-between items-center mb-4 sm:mb-6">
@@ -998,6 +1286,36 @@ const Dashboard = () => {
         <AddPrayerTime
           onClose={handleClosePrayerTime}
           onUpdate={handleUpdatePrayerTime}
+        />
+      )}
+
+      {showAddBlog && (
+        <AddBlog
+          onClose={handleCloseAddBlog}
+          onAddBlog={handleSubmitBlog}
+        />
+      )}
+
+      {showEditBlog && currentBlog && (
+        <EditBlog
+          blog={currentBlog}
+          onClose={handleCloseEditBlog}
+          onUpdate={handleUpdateBlog}
+        />
+      )}
+
+      {showAddPdfResource && (
+        <AddPdfResource
+          onClose={handleCloseAddPdfResource}
+          onAddResource={handleSubmitPdfResource}
+        />
+      )}
+
+      {showEditPdfResource && currentPdfResource && (
+        <EditPdfResource
+          resource={currentPdfResource}
+          onClose={handleCloseEditPdfResource}
+          onUpdate={handleUpdatePdfResource}
         />
       )}
     </div>

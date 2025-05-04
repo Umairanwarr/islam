@@ -8,7 +8,7 @@ import LiveClass from '../pages/liveClass';
 import AskImam from '../pages/askImam';
 import DailyReminder from '../pages/dailyReminder';
 import Blogs from '../pages/blogs';
-import Articles from '../pages/articles';
+import Resources from '../pages/resources';
 import Navbar from '../components/Navbar';
 import ScrollToTop from '../components/ScrollToTop';
 import './App.css';
@@ -25,7 +25,7 @@ const AppRoutes = () => {
       <Route path="/ask-imam" element={<AskImam />} />
       <Route path="/daily-reminder" element={<DailyReminder />} />
       <Route path="/blogs" element={<Blogs />} />
-      <Route path="/articles" element={<Articles />} />
+      <Route path="/resources" element={<Resources />} />
     </Routes>
   );
 };

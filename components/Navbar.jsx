@@ -94,12 +94,10 @@ const Navbar = () => {
           {/* Logo */}
           <Link to="/" className="flex items-center">
             <div className="flex items-center">
-              <div className="h-10 w-10 rounded-full bg-[#08948c] flex items-center justify-center mr-2">
-                <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8" />
-                </svg>
+              <div className="h-20 w-20 rounded-full overflow-hidden mr-4">
+                <img src="/logo.jpg" alt="Arraheeq Logo" className="w-full h-full object-cover" />
               </div>
-              <span className="text-xl font-bold text-gray-800">Arraheeq</span>
+              <span className="text-xl font-bold text-[#08948c]">Arraheeq</span>
             </div>
           </Link>
 
@@ -188,7 +186,7 @@ const Navbar = () => {
                 <Link
                   to="/blogs"
                   className={`text-base font-medium transition-all duration-300 px-3 py-1.5 rounded-md ${
-                    (location.pathname === '/blogs' || location.pathname === '/articles')
+                    (location.pathname === '/blogs' || location.pathname === '/resources')
                       ? 'text-[#08948c] border-b-2 border-[#08948c]'
                       : 'text-gray-600 hover:text-[#08948c]'
                   }`}
@@ -232,6 +230,16 @@ const Navbar = () => {
                   <div className="h-1 bg-gradient-to-r from-[#08948c] to-teal-400 mb-2"></div>
 
                   <Link
+                    to="/resources"
+                    className="flex items-center px-5 py-3 text-gray-700 hover:bg-gradient-to-r hover:from-teal-50 hover:to-white transition-colors duration-200 group"
+                  >
+                    <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-3 text-[#08948c] group-hover:text-teal-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 21h10a2 2 0 002-2V9.414a1 1 0 00-.293-.707l-5.414-5.414A1 1 0 0012.586 3H7a2 2 0 00-2 2v14a2 2 0 002 2z" />
+                    </svg>
+                    <span className="font-medium">PDF Resources</span>
+                  </Link>
+
+                  <Link
                     to="/blogs"
                     className="flex items-center px-5 py-3 text-gray-700 hover:bg-gradient-to-r hover:from-teal-50 hover:to-white transition-colors duration-200 group"
                   >
@@ -239,16 +247,6 @@ const Navbar = () => {
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 20H5a2 2 0 01-2-2V6a2 2 0 012-2h10a2 2 0 012 2v1M19 20a2 2 0 002-2V8a2 2 0 00-2-2h-5a2 2 0 00-2 2v12a2 2 0 002 2h5z" />
                     </svg>
                     <span className="font-medium">Blogs</span>
-                  </Link>
-
-                  <Link
-                    to="/articles"
-                    className="flex items-center px-5 py-3 text-gray-700 hover:bg-gradient-to-r hover:from-teal-50 hover:to-white transition-colors duration-200 group"
-                  >
-                    <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-3 text-[#08948c] group-hover:text-teal-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
-                    </svg>
-                    <span className="font-medium">Articles</span>
                   </Link>
                 </div>
               </div>
@@ -297,15 +295,17 @@ const Navbar = () => {
             </Link>
 
             {/* Donate Button */}
-            <button
-              onClick={() => scrollToSection('donation')}
+            <a
+              href="https://paypal.me/Mohammadabdullah1?country.x=GB&locale.x=en_GB"
+              target="_blank"
+              rel="noopener noreferrer"
               className="px-5 py-2.5 bg-gradient-to-r from-[#08948c] to-teal-500 text-white rounded-md hover:from-[#067a73] hover:to-teal-600 transition duration-300 shadow-md transform hover:scale-105 active:scale-95 flex items-center"
             >
               <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 mr-1.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
               </svg>
               <span className="font-medium">Donate</span>
-            </button>
+            </a>
           </div>
 
           {/* Mobile Menu Button */}
@@ -414,6 +414,18 @@ const Navbar = () => {
               {/* Resources Dropdown Items */}
               <div className="space-y-1 mt-1">
                 <Link
+                  to="/resources"
+                  className="flex items-center py-3 px-6 rounded-md hover:bg-gradient-to-r hover:from-teal-50 hover:to-white transition-colors duration-200"
+                >
+                  <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-3 text-[#08948c]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 21h10a2 2 0 002-2V9.414a1 1 0 00-.293-.707l-5.414-5.414A1 1 0 0012.586 3H7a2 2 0 00-2 2v14a2 2 0 002 2z" />
+                  </svg>
+                  <span className={`${location.pathname === '/resources' ? 'font-medium text-[#08948c]' : 'text-gray-700'}`}>
+                    PDF Resources
+                  </span>
+                </Link>
+
+                <Link
                   to="/blogs"
                   className="flex items-center py-3 px-6 rounded-md hover:bg-gradient-to-r hover:from-teal-50 hover:to-white transition-colors duration-200"
                 >
@@ -422,18 +434,6 @@ const Navbar = () => {
                   </svg>
                   <span className={`${location.pathname === '/blogs' ? 'font-medium text-[#08948c]' : 'text-gray-700'}`}>
                     Blogs
-                  </span>
-                </Link>
-
-                <Link
-                  to="/articles"
-                  className="flex items-center py-3 px-6 rounded-md hover:bg-gradient-to-r hover:from-teal-50 hover:to-white transition-colors duration-200"
-                >
-                  <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-3 text-[#08948c]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
-                  </svg>
-                  <span className={`${location.pathname === '/articles' ? 'font-medium text-[#08948c]' : 'text-gray-700'}`}>
-                    Articles
                   </span>
                 </Link>
               </div>
@@ -493,15 +493,17 @@ const Navbar = () => {
 
           {/* Donate Button */}
           <div className="mt-6 px-4">
-            <button
-              onClick={() => scrollToSection('donation')}
+            <a
+              href="https://paypal.me/Mohammadabdullah1?country.x=GB&locale.x=en_GB"
+              target="_blank"
+              rel="noopener noreferrer"
               className="w-full py-3.5 px-4 bg-gradient-to-r from-[#08948c] to-teal-500 text-white rounded-lg hover:from-[#067a73] hover:to-teal-600 transition duration-300 flex items-center justify-center shadow-md transform hover:scale-[1.02] active:scale-[0.98]"
             >
               <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
               </svg>
               <span className="font-medium text-lg">Donate Now</span>
-            </button>
+            </a>
             <p className="text-center text-xs text-gray-500 mt-2">Support our mission with your generous contribution</p>
           </div>
         </div>

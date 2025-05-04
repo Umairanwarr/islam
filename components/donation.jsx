@@ -47,12 +47,10 @@ function Donation() {
               <div className="flex-shrink-0 w-full md:w-auto flex justify-center">
                 {/* PayPal Button with proper branding */}
                 <a
-                  href="#"
+                  href="https://paypal.me/Mohammadabdullah1?country.x=GB&locale.x=en_GB"
                   className="inline-flex items-center px-8 py-4 bg-[#0070ba] text-white rounded-md hover:bg-[#003087] transition duration-300 shadow-md"
-                  onClick={(e) => {
-                    e.preventDefault();
-                    window.open('https://www.paypal.com/donate', '_blank');
-                  }}
+                  target="_blank"
+                  rel="noopener noreferrer"
                 >
                   <div className="flex items-center">
                     <svg className="w-6 h-6 mr-3" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">

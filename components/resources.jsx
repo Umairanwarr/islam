@@ -57,7 +57,7 @@ function Resources() {
               </p>
 
               <a href="/resources" className="text-yellow-500 font-medium hover:text-yellow-600 flex items-center mt-auto">
-                Download PDFs
+                Read Books
                 <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 ml-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
                 </svg>
@@ -104,7 +104,7 @@ function Resources() {
                 Explore articles on contemporary Islamic topics, reflections on the Quran, and spiritual guidance for daily life.
               </p>
 
-              <a href="/blog" className="text-purple-600 font-medium hover:text-purple-700 flex items-center mt-auto">
+              <a href="/blogs" className="text-purple-600 font-medium hover:text-purple-700 flex items-center mt-auto">
                 Read Articles
                 <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 ml-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />

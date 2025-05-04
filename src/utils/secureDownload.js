@@ -51,3 +51,45 @@ export const secureDownloadFile = async (fileId, fileName) => {
     throw error;
   }
 };
+
+/**
+ * Securely open a PDF file in a new tab from Appwrite storage
+ * @param {string} fileId - The ID of the file to open
+ * @returns {Promise<void>}
+ */
+export const secureOpenPdfInNewTab = async (fileId) => {
+  try {
+    if (!fileId) {
+      throw new Error('No file ID provided');
+    }
+
+    // Create a download URL with the Appwrite SDK
+    const downloadUrl = storage.getFileDownload(BUCKET_ID, fileId);
+
+    // Fetch the file directly using the browser's fetch API
+    const response = await fetch(downloadUrl);
+
+    if (!response.ok) {
+      throw new Error(`Failed to fetch file: ${response.statusText}`);
+    }
+
+    // Get the file as a blob
+    const blob = await response.blob();
+
+    // Create a blob URL for the file
+    const blobUrl = URL.createObjectURL(blob);
+
+    // Open the blob URL in a new tab
+    window.open(blobUrl, '_blank');
+
+    // Clean up the blob URL after a longer timeout to ensure the tab has time to load
+    setTimeout(() => {
+      URL.revokeObjectURL(blobUrl);
+    }, 30000); // 30 seconds should be enough for most PDFs to load
+
+    return true;
+  } catch (error) {
+    console.error('Error opening PDF:', error);
+    throw error;
+  }
+};
