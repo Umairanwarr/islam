@@ -94,7 +94,7 @@ const Navbar = () => {
           {/* Logo */}
           <Link to="/" className="flex items-center">
             <div className="flex items-center">
-              <div className="h-20 w-20 rounded-full overflow-hidden mr-4">
+              <div className="h-14 w-14 md:h-16 md:w-16 rounded-full overflow-hidden mr-2 md:mr-3">
                 <img src="/logo.jpg" alt="Arraheeq Logo" className="w-full h-full object-cover" />
               </div>
               <span className="text-xl font-bold text-[#08948c]">Arraheeq</span>
