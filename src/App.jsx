@@ -1,4 +1,4 @@
-import { BrowserRouter as Router, Routes, Route, useLocation } from 'react-router-dom';
+import { BrowserRouter as Router, Routes, Route, useLocation, Navigate } from 'react-router-dom';
 import { useEffect } from 'react';
 import LandingPage from '../pages/landingPage';
 import SurahList from '../pages/surahList';
@@ -9,6 +9,7 @@ import AskImam from '../pages/askImam';
 import DailyReminder from '../pages/dailyReminder';
 import Blogs from '../pages/blogs';
 import Resources from '../pages/resources';
+import NotFound from '../pages/NotFound';
 import Navbar from '../components/Navbar';
 import ScrollToTop from '../components/ScrollToTop';
 import './App.css';
@@ -21,11 +22,14 @@ const AppRoutes = () => {
       <Route path="/surah" element={<SurahList />} />
       <Route path="/surah/:id" element={<SurahDetail />} />
       <Route path="/mydashboard" element={<DashboardPage />} />
+      {/* Alternative path for dashboard to handle both with and without trailing slash */}
+      <Route path="/mydashboard/*" element={<DashboardPage />} />
       <Route path="/live-class" element={<LiveClass />} />
       <Route path="/ask-imam" element={<AskImam />} />
       <Route path="/daily-reminder" element={<DailyReminder />} />
       <Route path="/blogs" element={<Blogs />} />
       <Route path="/resources" element={<Resources />} />
+      <Route path="*" element={<NotFound />} />
     </Routes>
   );
 };

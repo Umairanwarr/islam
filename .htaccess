@@ -1,0 +1,30 @@
+# Enable rewriting
+RewriteEngine On
+
+# Set the base directory
+RewriteBase /
+
+# If the request is for an actual file or directory, skip the rewrite rules
+RewriteCond %{REQUEST_FILENAME} -f [OR]
+RewriteCond %{REQUEST_FILENAME} -d
+RewriteRule ^ - [L]
+
+# Handle requests for assets in the /assets directory
+RewriteRule ^assets/(.*)$ dist/assets/$1 [L]
+
+# Handle requests for static files in the public directory
+RewriteRule ^(logo\.jpg|favicon\.ico|robots\.txt|manifest\.json)$ dist/$1 [L]
+
+# Specific rule for the dashboard
+RewriteRule ^mydashboard(/.*)?$ dist/index.html [L]
+
+# Specific rules for other routes
+RewriteRule ^surah(/.*)?$ dist/index.html [L]
+RewriteRule ^live-class(/.*)?$ dist/index.html [L]
+RewriteRule ^ask-imam(/.*)?$ dist/index.html [L]
+RewriteRule ^daily-reminder(/.*)?$ dist/index.html [L]
+RewriteRule ^blogs(/.*)?$ dist/index.html [L]
+RewriteRule ^resources(/.*)?$ dist/index.html [L]
+
+# Rewrite all other requests to index.html
+RewriteRule ^ dist/index.html [L]

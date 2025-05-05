@@ -82,7 +82,7 @@ function Contact() {
           <div className="contact-info">
             <h2 className="text-4xl font-bold text-gray-800 mb-6">Get in Touch</h2>
             <p className="text-gray-600 mb-8">
-              Have questions or want to schedule a meeting? Feel free to reach out through any of
+              Have questions For Quran classes and Ruqiyah Shariyah? Feel free to reach out through any of
               the following channels or use the contact form.
             </p>
 
@@ -103,18 +103,7 @@ function Contact() {
                 </div>
               </div>
 
-              {/* Phone */}
-              <div className="flex items-start">
-                <div className="flex-shrink-0 bg-green-50 rounded-full p-3 mr-4">
-                  <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6 text-teal-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z" />
-                  </svg>
-                </div>
-                <div>
-                  <h3 className="text-lg font-semibold text-gray-800">Phone</h3>
-                  <p className="text-gray-600">+44 7403 978404</p>
-                </div>
-              </div>
+
             </div>
 
             {/* Social Media Icons */}
