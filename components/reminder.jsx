@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from 'react';
-import { Link } from 'react-router-dom';
 
 function Reminder() {
   const [verse, setVerse] = useState(null);
@@ -77,9 +76,9 @@ function Reminder() {
             )}
 
             <div className="flex justify-center mt-8">
-              <Link to="/daily-reminder" className="inline-flex items-center justify-center px-8 py-3 border-2 border-teal-600 text-teal-600 rounded-full hover:bg-teal-50 transition duration-300 text-lg font-medium">
+              <a href="/daily-reminder" className="inline-flex items-center justify-center px-8 py-3 border-2 border-teal-600 text-teal-600 rounded-full hover:bg-teal-50 transition duration-300 text-lg font-medium">
                 View Daily Reminder
-              </Link>
+              </a>
             </div>
           </div>
         </div>

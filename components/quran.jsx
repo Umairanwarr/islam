@@ -1,5 +1,4 @@
 import React, { useState } from 'react';
-import { Link } from 'react-router-dom';
 
 function Quran() {
   const [videoPlaying, setVideoPlaying] = useState(false);
@@ -119,9 +118,9 @@ function Quran() {
 
         {/* View All Button */}
         <div className="flex justify-center mt-12">
-          <Link to="/surah" className="inline-flex items-center justify-center px-8 py-3 border-2 border-teal-600 text-teal-600 rounded-full hover:bg-teal-50 transition duration-300 text-lg font-medium">
+          <a href="/surah" className="inline-flex items-center justify-center px-8 py-3 border-2 border-teal-600 text-teal-600 rounded-full hover:bg-teal-50 transition duration-300 text-lg font-medium">
             View All Recitations
-          </Link>
+          </a>
         </div>
       </div>
     </div>

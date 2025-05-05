@@ -1,5 +1,4 @@
 import React, { useEffect } from 'react';
-import { Link } from 'react-router-dom';
 
 function Resources() {
   // Ensure all resource cards are visible by default
@@ -43,12 +42,12 @@ function Resources() {
                 practical Islamic guidance for everyday life.
               </p>
 
-              <Link to="/daily-reminder" className="text-teal-600 font-medium hover:text-teal-700 flex items-center mt-auto">
+              <a href="/daily-reminder" className="text-teal-600 font-medium hover:text-teal-700 flex items-center mt-auto">
                 View Reminders
                 <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 ml-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
                 </svg>
-              </Link>
+              </a>
             </div>
           </div>
 
@@ -68,12 +67,12 @@ function Resources() {
                 ages.
               </p>
 
-              <Link to="/resources" className="text-yellow-500 font-medium hover:text-yellow-600 flex items-center mt-auto">
+              <a href="/resources" className="text-yellow-500 font-medium hover:text-yellow-600 flex items-center mt-auto">
                 Read Books
                 <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 ml-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
                 </svg>
-              </Link>
+              </a>
             </div>
           </div>
 
@@ -92,12 +91,12 @@ function Resources() {
                 Join interactive online classes covering Quran, Tajweed, and Islamic studies for students of all ages and levels.
               </p>
 
-              <Link to="/live-class" className="text-blue-500 font-medium hover:text-blue-600 flex items-center mt-auto">
+              <a href="/live-class" className="text-blue-500 font-medium hover:text-blue-600 flex items-center mt-auto">
                 View Schedule
                 <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 ml-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
                 </svg>
-              </Link>
+              </a>
             </div>
           </div>
 
@@ -116,12 +115,12 @@ function Resources() {
                 Explore articles on contemporary Islamic topics, reflections on the Quran, and spiritual guidance for daily life.
               </p>
 
-              <Link to="/blogs" className="text-purple-600 font-medium hover:text-purple-700 flex items-center mt-auto">
+              <a href="/blogs" className="text-purple-600 font-medium hover:text-purple-700 flex items-center mt-auto">
                 Read Articles
                 <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 ml-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
                 </svg>
-              </Link>
+              </a>
             </div>
           </div>
         </div>
